@@ -13,7 +13,7 @@ namespace ButtzxBank
     public class m_cSendUtil
     {
         //封装发送
-        public static SortedDictionary<string, string> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request)
+        public static Dictionary<string, object> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request)
         {
             if (bizData == null)
                 throw new ArgumentNullException("bizData");
@@ -77,7 +77,7 @@ namespace ButtzxBank
                     m_pJObject["noData"] = true;
                 }
             }
-            SortedDictionary<string, string> resultMap = m_pJObject.ToObject<SortedDictionary<string, string>>();
+            Dictionary<string, object> resultMap = m_pJObject.ToObject<Dictionary<string, object>>();
             respVerify(resultMap);
 
             return resultMap;
@@ -123,14 +123,14 @@ namespace ButtzxBank
         }
 
         //验签
-        public static void respVerify(SortedDictionary<string, string> resultMap)
+        public static void respVerify(Dictionary<string, object> resultMap)
         {
             //15、获取网关响应码
-            string retCode = resultMap["retCode"];
+            string retCode = resultMap["retCode"]?.ToString();
             Log.Instance.Debug($"状态码:{retCode}");
             if (!"0".Equals(retCode))
             {
-                throw new Exception(resultMap["retMsg"]);
+                throw new Exception(resultMap["retMsg"]?.ToString());
             }
             //16、空数据响应
             bool noData = Convert.ToBoolean(resultMap["noData"]);

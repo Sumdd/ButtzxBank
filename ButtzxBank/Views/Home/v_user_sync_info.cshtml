@@ -91,6 +91,48 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label" title="作业人员办公手机">作业人员办公手机</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="officePhone" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="作业人员微信号">作业人员微信号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="weixin" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="作业人员QQ">作业人员QQ</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="qq" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="地区">地区</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="workArea" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="职位">职位</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="type" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="邮箱">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="email" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="状态">状态</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="status" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button type="button" class="layui-btn" name="setUsersJSONStr">拼接值用户信息列表JSON</button>
                     </div>
@@ -177,6 +219,27 @@
                 //officeTel
                 var officeTel = $('input[name="officeTel"]').val();
                 userJSON.officeTel = officeTel;
+                //officePhone
+                var officePhone = $('input[name="officePhone"]').val();
+                userJSON.officePhone = officePhone;
+                //weixin
+                var weixin = $('input[name="weixin"]').val();
+                userJSON.weixin = weixin;
+                //qq
+                var qq = $('input[name="qq"]').val();
+                userJSON.qq = qq;
+                //workArea
+                var workArea = $('input[name="workArea"]').val();
+                userJSON.workArea = workArea;
+                //type
+                var type = $('input[name="type"]').val();
+                userJSON.type = type;
+                //email
+                var email = $('input[name="email"]').val();
+                userJSON.email = email;
+                //status
+                var status = $('input[name="status"]').val();
+                userJSON.status = status;
                 //拼接
                 var val = $usersJSONStr.val();
                 if (val) {

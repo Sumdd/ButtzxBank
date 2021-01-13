@@ -34,19 +34,21 @@ namespace ButtzxBank.Controllers
                 List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
                 //1、接口编号
                 string interfaceId = "/user/sync/info";
-                //2、报文体内容
-                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
-                encryptInfo.Add(m_cConfigConstants.DATA, m_cQuery.m_fGetQueryString(m_lQueryList, "usersJSONStr"));
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                encryptInfo.Add("users", JsonConvert.DeserializeObject<List<object>>(m_cQuery.m_fGetQueryString(m_lQueryList, "usersJSONStr")));
                 //3、其它可以直接获取的内容
                 Dictionary<string, object> bizData = new Dictionary<string, object>();
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                SortedDictionary<string, string> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
 
-                JObject m_pData = JObject.Parse(resultMap["data"]);
-                data = m_pData["userToken"].ToString();
-                Session["userToken"] = data;
+                ///***自己处理吧
+
+                //JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                //data = m_pData["userToken"].ToString();
+                //Session["userToken"] = data;
 
                 return rJson();
             }
@@ -90,11 +92,12 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                SortedDictionary<string, string> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
 
-                JObject m_pData = JObject.Parse(resultMap["data"]);
-                data = m_pData["userToken"].ToString();
-                Session["userToken"] = data;
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
 
                 return rJson();
             }
@@ -132,7 +135,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                SortedDictionary<string, string> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
 
                 return rJson();
             }
