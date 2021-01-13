@@ -7,11 +7,11 @@
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
     <style>
         .layui-form-label {
-            width: 150px;
+            width: 190px;
         }
 
         .layui-input-block {
-            margin-left: 180px;
+            margin-left: 220px;
         }
     </style>
 </head>
@@ -78,7 +78,7 @@
                         <input type="text" name="education" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
                     <label class="layui-form-label" title="从事催收工作的起始时间">从事催收工作的起始时间</label>
                     <div class="layui-input-block">
                         <input type="text" name="workStartDate" autocomplete="off" class="layui-input datepicker" />
@@ -92,7 +92,7 @@
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" id="setJSONStr">拼接值用户信息列表JSON</button>
+                        <button type="button" class="layui-btn" name="setUsersJSONStr">拼接值用户信息列表JSON</button>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -141,6 +141,50 @@
                     }
                 });
                 return false;
+            });
+
+            //拼接JSON
+            $('button[name="setUsersJSONStr"]').click(function () {
+                var $usersJSONStr = $('textarea[name="usersJSONStr"]');
+                var userJSON = {};
+                //agentId
+                var agentId = $('input[name="agentId"]').val();
+                userJSON.agentId = agentId;
+                //userName
+                var userName = $('input[name="userName"]').val();
+                userJSON.userName = userName;
+                //userId
+                var userId = $('input[name="userId"]').val();
+                userJSON.userId = userId;
+                //gender
+                var gender = $('input[name="gender"]').val();
+                userJSON.gender = gender;
+                //cid
+                var cid = $('input[name="cid"]').val();
+                userJSON.cid = cid;
+                //phone
+                var phone = $('input[name="phone"]').val();
+                userJSON.phone = phone;
+                //position
+                var position = $('input[name="position"]').val();
+                userJSON.position = position;
+                //education
+                var education = $('input[name="education"]').val();
+                userJSON.education = education;
+                //workStartDate
+                var workStartDate = $('input[name="workStartDate"]').val();
+                userJSON.workStartDate = workStartDate;
+                //officeTel
+                var officeTel = $('input[name="officeTel"]').val();
+                userJSON.officeTel = officeTel;
+                //拼接
+                var val = $usersJSONStr.val();
+                if (val) {
+                    var length = val.length;
+                    $usersJSONStr.val(val.substring(0, length - 1) + ',' + JSON.stringify(userJSON) + ']');
+                } else {
+                    $usersJSONStr.val('[' + JSON.stringify(userJSON) + ']');
+                }
             });
         });
     </script>

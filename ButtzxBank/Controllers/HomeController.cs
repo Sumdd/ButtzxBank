@@ -36,6 +36,7 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/user/sync/info";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                encryptInfo.Add(m_cConfigConstants.DATA, m_cQuery.m_fGetQueryString(m_lQueryList, "usersJSONStr"));
                 //3、其它可以直接获取的内容
                 Dictionary<string, object> bizData = new Dictionary<string, object>();
                 //4、引入报文体
