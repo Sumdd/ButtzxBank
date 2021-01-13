@@ -16,7 +16,7 @@ namespace ButtzxBank
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "v_user_sync_token", id = UrlParameter.Optional }
             );
         }
     }
