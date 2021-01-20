@@ -44,11 +44,8 @@ namespace ButtzxBank.Controllers
                 //5、发送处理对应处理请求
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
 
-                ///***自己处理吧
-
-                //JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
-                //data = m_pData["userToken"].ToString();
-                //Session["userToken"] = data;
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"用户令牌数据同步成功,更新数据量{m_pData["count"]}";
 
                 return rJson();
             }
@@ -136,6 +133,1052 @@ namespace ButtzxBank.Controllers
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/case/info 委外案件基本信息
+        public ActionResult v_case_info(string queryString)
+        {
+            ViewBag.Title = "/case/info 委外案件基本信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_case_info(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/case/info";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///访问标志
+                encryptInfo.Add("visitFlag", m_cQuery.m_fGetQueryString(m_lQueryList, "visitFlag"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+               
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/acct/list 委外案件账户信息
+        public ActionResult v_acct_list(string queryString)
+        {
+            ViewBag.Title = "/acct/list 委外案件账户信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_acct_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/acct/list";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///账号
+                encryptInfo.Add("acctId", m_cQuery.m_fGetQueryString(m_lQueryList, "acctId"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/maininfo 委外案件客户信息
+        public ActionResult v_cust_maininfo(string queryString)
+        {
+            ViewBag.Title = "/cust/maininfo 委外案件客户信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_maininfo(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/maininfo";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/maininfo/addition 委外案件客户邮寄积分信息
+        public ActionResult v_cust_maininfo_addition(string queryString)
+        {
+            ViewBag.Title = "/cust/maininfo/addition 委外案件客户邮寄积分信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_maininfo_addition(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/maininfo/addition";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/maininfo/phone/list 委外案件客户联系方式
+        public ActionResult v_cust_maininfo_phone_list(string queryString)
+        {
+            ViewBag.Title = "/cust/maininfo/phone/list 委外案件客户联系方式";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_maininfo_phone_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/maininfo/phone/list";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("cardId", m_cQuery.m_fGetQueryString(m_lQueryList, "cardId"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/maininfo/address/list 委外案件客户联系地址
+        public ActionResult v_cust_maininfo_address_list(string queryString)
+        {
+            ViewBag.Title = "/cust/maininfo/address/list 委外案件客户联系地址";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_maininfo_address_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/maininfo/address/list";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("cardId", m_cQuery.m_fGetQueryString(m_lQueryList, "cardId"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/case/aipa 委外案件客户实时交易信息
+        public ActionResult v_case_aipa(string queryString)
+        {
+            ViewBag.Title = "/case/aipa 委外案件客户实时交易信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_case_aipa(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/case/aipa";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///卡号
+                encryptInfo.Add("cardId", m_cQuery.m_fGetQueryString(m_lQueryList, "cardId"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/case/realtime/repay 委外案件客户实时还款信息
+        public ActionResult v_case_realtime_repay(string queryString)
+        {
+            ViewBag.Title = "/case/realtime/repay 委外案件客户实时还款信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_case_realtime_repay(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/case/realtime/repay";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///账户号
+                encryptInfo.Add("acctId", m_cQuery.m_fGetQueryString(m_lQueryList, "acctId"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/case/etp 委外案件客户账单信息
+        public ActionResult v_case_etp(string queryString)
+        {
+            ViewBag.Title = "/case/etp 委外案件客户账单信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_case_etp(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/case/etp";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///卡号
+                encryptInfo.Add("cardId", m_cQuery.m_fGetQueryString(m_lQueryList, "cardId"));
+                ///币种
+                encryptInfo.Add("currency", m_cQuery.m_fGetQueryString(m_lQueryList, "currency"));
+
+                ///交易起始日期
+                encryptInfo.Add("startDate", m_cQuery.m_fGetQueryString(m_lQueryList, "startDate"));
+                ///交易结束日期
+                encryptInfo.Add("endDate", m_cQuery.m_fGetQueryString(m_lQueryList, "endDate"));
+
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/coll/record/history 委外案件催记历史信息
+        public ActionResult v_coll_record_history(string queryString)
+        {
+            ViewBag.Title = "/coll/record/history 委外案件催记历史信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_coll_record_history(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/coll/record/history";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///催记类型
+                encryptInfo.Add("collType", m_cQuery.m_fGetQueryString(m_lQueryList, "collType"));
+                ///起始页码
+                encryptInfo.Add("start", m_cQuery.m_fGetQueryString(m_lQueryList, "start"));
+                ///每页条数
+                encryptInfo.Add("limit", m_cQuery.m_fGetQueryString(m_lQueryList, "limit"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+
+
+                ///催记开始时间
+                encryptInfo.Add("startDate", m_cQuery.m_fGetQueryString(m_lQueryList, "startDate"));
+                ///催记结束时间
+                encryptInfo.Add("endDate", m_cQuery.m_fGetQueryString(m_lQueryList, "endDate"));
+
+               
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/action/submit 委外机构催记录入
+        public ActionResult v_action_submit(string queryString)
+        {
+            ViewBag.Title = "/action/submit 委外机构催记录入";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_action_submit(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/action/submit";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///行动日期
+                string actionDate = m_cQuery.m_fGetQueryString(m_lQueryList, "actionDate");
+                actionDate = actionDate.Replace("-","").Replace(" ","").Replace(":","");
+                encryptInfo.Add("actionDate", actionDate);
+                ///约会日期
+                string appointDate = m_cQuery.m_fGetQueryString(m_lQueryList, "appointDate");
+                actionDate = actionDate.Replace("-", "").Replace(" ", "");
+                encryptInfo.Add("appointDate", appointDate);
+                ///约会日期
+                string appointTime = m_cQuery.m_fGetQueryString(m_lQueryList, "appointTime");
+                actionDate = actionDate.Replace(":", "");
+                encryptInfo.Add("appointTime", appointTime);
+                ///行动代码
+                encryptInfo.Add("actionCode", m_cQuery.m_fGetQueryString(m_lQueryList, "actionCode"));
+                ///账户号
+                encryptInfo.Add("acctId", m_cQuery.m_fGetQueryString(m_lQueryList, "acctId"));
+                ///承诺金额
+                encryptInfo.Add("dueAmt", m_cQuery.m_fGetQueryString(m_lQueryList, "dueAmt"));
+                ///备注
+                encryptInfo.Add("comment", m_cQuery.m_fGetQueryString(m_lQueryList, "comment"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"催记录入成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/phone/update 委外案件客户联系方式修正
+        public ActionResult v_cust_phone_update(string queryString)
+        {
+            ViewBag.Title = "/cust/phone/update 委外案件客户联系方式修正";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_phone_update(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/phone/update";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///电话类型
+                encryptInfo.Add("phoneType", m_cQuery.m_fGetQueryString(m_lQueryList, "phoneType"));
+                ///电话号码
+                encryptInfo.Add("phone", m_cQuery.m_fGetQueryString(m_lQueryList, "phone"));
+                ///关系类型
+                encryptInfo.Add("relation", m_cQuery.m_fGetQueryString(m_lQueryList, "relation"));
+                ///姓名
+                encryptInfo.Add("name", m_cQuery.m_fGetQueryString(m_lQueryList, "name"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外案件客户联系方式修正成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/cust/address/update 委外案件客户联系地址修正
+        public ActionResult v_cust_address_update(string queryString)
+        {
+            ViewBag.Title = "/cust/address/update 委外案件客户联系地址修正";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_cust_address_update(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/address/update";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///姓名
+                encryptInfo.Add("name", m_cQuery.m_fGetQueryString(m_lQueryList, "name"));
+                ///关系类型
+                encryptInfo.Add("relation", m_cQuery.m_fGetQueryString(m_lQueryList, "relation"));
+                ///地址类型
+                encryptInfo.Add("addressType", m_cQuery.m_fGetQueryString(m_lQueryList, "addressType"));
+                ///地址
+                encryptInfo.Add("address", m_cQuery.m_fGetQueryString(m_lQueryList, "address"));
+               
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外案件客户联系地址修正成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/visit/apply/decode 委外案件信息外访申请
+        public ActionResult v_visit_apply_decode(string queryString)
+        {
+            ViewBag.Title = "/visit/apply/decode 委外案件信息外访申请";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_visit_apply_decode(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/visit/apply/decode";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///委外机构网点代码
+                encryptInfo.Add("agentId", m_cQuery.m_fGetQueryString(m_lQueryList, "agentId"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///外访时间
+                encryptInfo.Add("outTime", m_cQuery.m_fGetQueryString(m_lQueryList, "outTime"));
+                ///地址类型
+                encryptInfo.Add("decodeType", m_cQuery.m_fGetQueryString(m_lQueryList, "decodeType"));
+                ///脱敏值
+                encryptInfo.Add("desValue", m_cQuery.m_fGetQueryString(m_lQueryList, "desValue"));
+                ///申请明文值ID
+                encryptInfo.Add("applyId", m_cQuery.m_fGetQueryString(m_lQueryList, "applyId"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外案件信息外访申请成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/visit/apply/decode/delay 委外案件信息外访申请延期
+        public ActionResult v_visit_apply_decode_delay(string queryString)
+        {
+            ViewBag.Title = "/visit/apply/decode/delay 委外案件信息外访申请延期";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_visit_apply_decode_delay(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/visit/apply/decode/delay";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///外访记录ID
+                encryptInfo.Add("visitId", m_cQuery.m_fGetQueryString(m_lQueryList, "visitId"));
+                ///外访时间
+                encryptInfo.Add("outTime", m_cQuery.m_fGetQueryString(m_lQueryList, "outTime"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外案件信息外访申请延期成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/visit/apply/list 委外案件外访申请审核信息
+        public ActionResult v_visit_apply_list(string queryString)
+        {
+            ViewBag.Title = "/visit/apply/list 委外案件外访申请审核信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_visit_apply_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/visit/apply/list";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///状态
+                encryptInfo.Add("status", m_cQuery.m_fGetQueryString(m_lQueryList, "status"));
+               
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/visit/apply/review 委外案件外访审核
+        public ActionResult v_visit_apply_review(string queryString)
+        {
+            ViewBag.Title = "/visit/apply/review 委外案件外访审核";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_visit_apply_review(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/visit/apply/review";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///外访记录ID
+                encryptInfo.Add("visitId", m_cQuery.m_fGetQueryString(m_lQueryList, "visitId"));
+                ///审核结果
+                encryptInfo.Add("result", m_cQuery.m_fGetQueryString(m_lQueryList, "result"));
+                ///审核备注
+                encryptInfo.Add("comment", m_cQuery.m_fGetQueryString(m_lQueryList, "comment"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外案件外访审核成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/apply/decode 委外数据明文申请
+        public ActionResult v_apply_decode(string queryString)
+        {
+            ViewBag.Title = "/apply/decode 委外数据明文申请";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_apply_decode(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/apply/decode";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///脱敏值
+                encryptInfo.Add("desValue", m_cQuery.m_fGetQueryString(m_lQueryList, "desValue"));
+                ///明文类型
+                encryptInfo.Add("decodeType", m_cQuery.m_fGetQueryString(m_lQueryList, "decodeType"));
+                ///申请明文值ID
+                encryptInfo.Add("applyId", m_cQuery.m_fGetQueryString(m_lQueryList, "applyId"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外数据明文申请成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/apply/list 委外数据明文申请审核信息
+        public ActionResult v_apply_list(string queryString)
+        {
+            ViewBag.Title = "/apply/list 委外数据明文申请审核信息";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_apply_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/cust/maininfo";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+                ///状态
+                encryptInfo.Add("status", m_cQuery.m_fGetQueryString(m_lQueryList, "status"));
+              
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/apply/review 委外数据明文审核
+        public ActionResult v_apply_review(string queryString)
+        {
+            ViewBag.Title = "/apply/review 委外数据明文审核";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_apply_review(string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/apply/review";
+                //2、报文体内容下
+                Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+                ///用户令牌
+                encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
+                ///待审核ID
+                encryptInfo.Add("reviewId", m_cQuery.m_fGetQueryString(m_lQueryList, "reviewId"));
+                ///审核结果
+                encryptInfo.Add("result", m_cQuery.m_fGetQueryString(m_lQueryList, "result"));
+                ///审核备注
+                encryptInfo.Add("comment", m_cQuery.m_fGetQueryString(m_lQueryList, "comment"));
+          
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
+                msg = $"委外数据明文审核成功";
+
+                return rJson();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region ***/visit/record/list 委外外访信息查询
+        public ActionResult v_visit_record_list(string queryString)
+        {
+            ViewBag.Title = "/visit/record/list 委外外访信息查询";
+            ViewBag.queryString = m_cCore.ToEncodingString(queryString);
+            return View();
+        }
+        public JsonResult f_visit_record_list(int page, int limit, string type, string eqli, string field, string queryString)
+        {
+            try
+            {
+                List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+                //1、接口编号
+                string interfaceId = "/visit/record/list";
+                //2、报文体内容
+                Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///外访开始时间
+                encryptInfo.Add("outBeginTime", m_cQuery.m_fGetQueryString(m_lQueryList, "outBeginTime"));
+                ///外访结束时间
+                encryptInfo.Add("outEndTime", m_cQuery.m_fGetQueryString(m_lQueryList, "outEndTime"));
+
+                ///委外机构网点代码
+                encryptInfo.Add("agentId", m_cQuery.m_fGetQueryString(m_lQueryList, "agentId"));
+                ///卡号
+                encryptInfo.Add("cardNo", m_cQuery.m_fGetQueryString(m_lQueryList, "cardNo"));
+                ///客户姓名
+                encryptInfo.Add("custName", m_cQuery.m_fGetQueryString(m_lQueryList, "custName"));
+                ///证件号码
+                encryptInfo.Add("cid", m_cQuery.m_fGetQueryString(m_lQueryList, "cid"));
+                ///案件号
+                encryptInfo.Add("caseId", m_cQuery.m_fGetQueryString(m_lQueryList, "caseId"));
+                ///手机号码
+                encryptInfo.Add("phone", m_cQuery.m_fGetQueryString(m_lQueryList, "phone"));
+                ///外访人
+                encryptInfo.Add("userId", m_cQuery.m_fGetQueryString(m_lQueryList, "userId"));
+                //3、其它可以直接获取的内容
+                Dictionary<string, object> bizData = new Dictionary<string, object>();
+                //4、引入报文体
+                bizData.Add(m_cConfigConstants.DATA, encryptInfo);
+                //5、发送处理对应处理请求
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request);
+
+                count = Convert.ToInt32(resultMap["total"]?.ToString());
+                List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+                msg = resultMap["retMsg"]?.ToString();
+                count = m_pData.Count;
+                data = m_pData;
+
 
                 return rJson();
             }

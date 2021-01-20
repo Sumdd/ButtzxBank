@@ -1,0 +1,148 @@
+﻿
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
+    <style>
+        .layui-form-label {
+            width: 190px;
+        }
+
+        .layui-input-block {
+            margin-left: 220px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-header">
+        <ul class="layui-nav layui-bg-green">
+            <li class="layui-nav-item">
+                <label>@ViewBag.Title</label>
+            </li>
+            @Html.Partial("~/Views/Home/P_NAV.cshtml")
+        </ul>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">
+            查询条件
+        </div>
+        <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
+            <form class="layui-form" lay-filter="defaultSearch">
+
+
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="用户令牌">用户令牌</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+             
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="起始页码">起始页码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="start" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="每页条数">每页条数</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="limit" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="案件号">案件号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="催记开始时间">催记开始时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="startDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="催记结束时间">催记结束时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="endDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="催记类型">催记类型</label>
+                    <div class="layui-input-block">
+                        <select name="collType" required lay-verify="required" lay-verType="tips" autocomplete="off">
+                            <option value="0">系统催记</option>
+                            <option value="2">催收轨迹</option>
+                            <option value="3">人工催记</option>
+                            <option value="4">辅助渠道</option>
+                        </select>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="layui-card-body">
+            <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/layui/layui.js")"></script>
+    <script>
+        layui.config({
+            base: '@Url.Content("~/layui/modules/")'
+        }).use(['element', 'form', 'table', 'layer', 'core'], function () {
+            var $ = layui.jquery,
+                element = layui.element,
+                core = layui.core,
+                layer = layui.layer,
+                form = layui.form,
+                table = layui.table;
+
+            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
+
+            table.render({
+                size: 'sm',
+                elem: '#defaultTable',
+                id: 'defaultTable',
+                method: 'post',
+                where: {
+                    queryString: core.queryString()
+                },
+                page: true,
+                even: true,
+                autoSort: false,
+                cellMinWidth: 80,
+                cols: [[
+                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'caseId', title: '案件号' },
+                    { field: 'actionName', title: '行动名称（行动代码）' },
+                    { field: 'recordType', title: '催记类型' },
+                    { field: 'contactPerson', title: '联系人' },
+                    { field: 'contactType', title: '联系方式' },
+                    { field: 'commitAmount', title: '承诺金额' },
+                    { field: 'commitDate', title: '承诺日期' },
+                    { field: 'orbitType', title: '轨迹类型' },
+                    { field: 'actionTypeDesc', title: '行动描述' },
+                    { field: 'disChannel', title: '分案渠道' },
+                    { field: 'outChannel', title: '转出渠道' },
+                    { field: 'userCode', title: '催收员（处理人）' },
+                    { field: 'createTime', title: '创建时间（行动日期）' },
+                    { field: 'actionId', title: '行动代号' },
+                    { field: 'actionCommentDES', title: '备注' },
+                    { field: 'acctIdDES', title: '账户（户口号）' },
+                      { field: 'collType', title: '催收方式（作业方式）' },
+                    { field: 'taskFinishedDate', title: '任务结束时间' },
+                    { field: 'appointTime', title: '约会时间' }
+                ]]
+            });
+
+            core.loadQuery('@ViewBag.queryString');
+        });
+    </script>
+</body>
+</html>

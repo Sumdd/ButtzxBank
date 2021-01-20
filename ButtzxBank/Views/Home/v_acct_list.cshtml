@@ -1,19 +1,12 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
-    <style>
-        .layui-form-label {
-            width: 190px;
-        }
-
-        .layui-input-block {
-            margin-left: 220px;
-        }
-    </style>
+  
 </head>
 <body>
     <div class="layui-header">
@@ -24,6 +17,7 @@
             @Html.Partial("~/Views/Home/P_NAV.cshtml")
         </ul>
     </div>
+
     <div class="layui-card">
         <div class="layui-card-header">
             查询条件
@@ -31,11 +25,47 @@
         <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
             <form class="layui-form" lay-filter="defaultSearch">
                 <div class="layui-inline">
-                    <label class="layui-form-label" title="查询起始RRN No">查询起始RRN No</label>
+                    <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="rrn" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="案件号">案件号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="账号">账号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="acctId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="起始页码">起始页码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="start" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div><br />
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="每页条数">每页条数</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="limit" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                @*<div class="layui-inline">
+                    <label class="layui-form-label" title="开始日期">开始日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="startDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="结束日期">结束日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="endDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>*@
             </form>
         </div>
         <div class="layui-card-body">
@@ -105,7 +135,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_casepool_list")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
 
             table.render({
                 size: 'sm',
@@ -120,24 +150,25 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'numbers', fixed: 'left' },
+                    { type: 'acctIdENC', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
-                    { field: 'custNbr', title: '客户证件号码' },
-                    { field: 'custName', title: '客户姓名' },
-                    { field: 'queueName', title: '队列名称' },
-                    { field: 'outDate', title: '委案日期' },
-                    { field: 'outEndDate', title: '委案到期日' },
-                    { field: 'dpd', title: '逾期天数' },
-                    { field: 'reduceFlag', title: '减免标识' },
-                    { field: 'custBal', title: '客户余额' },
-                    { field: 'custRmbBal', title: '客户人民币余额' },
-                    { field: 'custUsdBal', title: '客户美元余额' },
-                    { field: 'principal', title: '客户总本金' },
-                    { field: 'custInstResidualBal', title: '客户分期剩余余额' },
-                    { field: 'cd', title: '客户分期剩余余额' },
-                    { field: 'cityName', title: '城市名称' },
-                    { field: 'branchName', title: '分行名称' },
-                    { field: 'custId', title: '客户号' }
+                    { field: 'acctIdENC', title: '账号' },
+                    { field: 'acctIdDES', title: '账号（脱敏）' },
+                    { field: 'acctPdt', title: '卡类' },
+                    { field: 'currency', title: '币种' },
+                    { field: 'caseId', title: '案件号' },
+                    { field: 'rdCorCustNbr', title: '法人持卡人代号' },
+                    { field: 'rdCustNbr', title: '主持卡人代号' },
+                    { field: 'lastPayMonth', title: '最后缴款日期' },
+                    { field: 'entrustStartDate', title: '委托日期' },
+                    { field: 'entrustEndDate', title: '到期日期' },
+                    { field: 'cardId', title: '卡号' },
+                    { field: 'balanceOpsAmt', title: '欠款金额OPS（系统最新）' },
+                    { field: 'principalOpsAmt', title: '欠款本金OPS（系统最新）' },
+                    { field: 'accAmt', title: '应收利息' },
+                    { field: 'overPeriod', title: '逾期时段（系统最新）' },
+                    { field: 'outsourceTimes', title: '委外次数' },
+
                 ]]
             });
 

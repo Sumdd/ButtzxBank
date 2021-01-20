@@ -1,0 +1,137 @@
+﻿
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="layui-header">
+        <ul class="layui-nav layui-bg-green">
+            <li class="layui-nav-item">
+                <label>@ViewBag.Title</label>
+            </li>
+            @Html.Partial("~/Views/Home/P_NAV.cshtml")
+        </ul>
+    </div>
+    <div class="layui-card">
+        <div class="layui-card-header">
+            查询条件
+        </div>
+        <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
+            <form class="layui-form" lay-filter="defaultSearch">
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="用户令牌">用户令牌</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="案件号">案件号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-card-body">
+            <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/layui/layui.js")"></script>
+    <script>
+        layui.config({
+            base: '@Url.Content("~/layui/modules/")'
+        }).use(['element', 'form', 'table', 'layer', 'core'], function () {
+            var $ = layui.jquery,
+                element = layui.element,
+                core = layui.core,
+                layer = layui.layer,
+                form = layui.form,
+                table = layui.table;
+
+            core.defaultQuery.url = '@Url.Content("~/Home/f_case_info")';
+
+            table.render({
+                size: 'sm',
+                elem: '#defaultTable',
+                id: 'defaultTable',
+                method: 'post',
+                where: {
+                    queryString: core.queryString()
+                },
+                page: true,
+                even: true,
+                autoSort: false,
+                cellMinWidth: 80,
+                cols: [[
+                    { type: 'numbers', fixed: 'left' },
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'currUserId', title: '当前催收员' },
+                    { field: 'custName', title: '持卡人姓名' },
+                    { field: 'custename', title: '持卡人英文名' },
+                    { field: 'cidType', title: '证件类型' },
+                    { field: 'cidDES', title: '证件号码' },
+                    { field: 'gender', title: '性别' },
+                    { field: 'nation', title: '国籍' },
+                    { field: 'custmprov', title: '持卡人通讯省份' },
+                    { field: 'custmcity', title: '持卡人通讯城市' },
+                    { field: 'married', title: '婚否' },
+                    { field: 'companyName', title: '单位名称' },
+                    { field: 'position', title: '职务' },
+                    { field: 'workId', title: '工作证号' },
+                    { field: 'mail', title: '电邮地址' },
+                    { field: 'cellphoneDES', title: '本人手机号码' },
+                    { field: 'cellphoneRSA', title: '本人手机号码加密串' },
+                    { field: 'custmaddrDES', title: '本人通讯地址' },
+                    { field: 'custmzip', title: '本人通讯邮编' },
+                    { field: 'custphoneDES', title: '本人住宅电话' },
+                    { field: 'custphoneRSA', title: '本人住宅电话加密串' },
+                    { field: 'custaddrDES', title: '本人住宅地址' },
+                    { field: 'custcity', title: '本人住宅城市' },
+                    { field: 'custprov', title: '本人住宅省' },
+                    { field: 'custzip', title: '本人住宅邮编' },
+                    { field: 'custemptelDES', title: '本人公司电话' },
+                    { field: 'custemptelRSA', title: '本人公司电话加密串' },
+                    { field: 'custempaDES', title: '本人单位地址' },
+                    { field: 'custempaz', title: '本人单位邮编' },
+                    { field: 'custempctc', title: '本人单位城市' },
+                    { field: 'custglnam', title: '非亲属联系人姓名' },
+                    { field: 'custglrln', title: '与持卡人关系' },
+                    { field: 'custgsex', title: '性别' },
+                    { field: 'custgemp', title: '联系人单位名称' },
+                    { field: 'custgwrkidDES', title: '非亲属联系人手机' },
+                    { field: 'custgwrkidRSA', title: '非亲属联系人手机加密串' },
+                    { field: 'custgphoneDES', title: '非亲属联系人家电' },
+                    { field: 'custgphoneRSA', title: '非亲属联系人家电加密串' },
+                    { field: 'custgemptlDES', title: '非亲属联系人办电' },
+                    { field: 'custgemptlRSA', title: '非亲属联系人办电加密串' },
+                    { field: 'custgoccDES', title: '办电分机' },
+                    { field: 'custgoccRSA', title: '办电分机加密串' },
+                    { field: 'custgempaDES', title: '联系人单位地址' },
+                    { field: 'custgcity', title: '联系人城市' },
+                    { field: 'custgprov', title: '联系人省' },
+                    { field: 'custgempaz', title: '联系人单位邮编' },
+                    { field: 'custrfname', title: '亲属联系人姓名' },
+                    { field: 'custrfrln', title: '与持卡人关系' },
+                    { field: 'custrfmblpDES', title: '亲属联系人手机' },
+                    { field: 'custrfmblpRSA', title: '亲属联系人手机加密串' },
+                    { field: 'custrfphnoDES', title: '亲属联系人家电' },
+                    { field: 'custrfphnoRSA', title: '亲属联系人家电加密串' },
+                    { field: 'custrfofpnDES', title: '亲属联系人办电' },
+                    { field: 'custrfofpnRSA', title: '亲属联系人办电' },
+                    { field: 'custcname', title: '单位名称' },
+                    { field: 'policeregAddrDES', title: '公安户籍地址' },
+                    { field: 'serveAddrDES', title: '服务住所地址' },
+                    { field: 'policestaAddrDES', title: '所管辖派出所' }
+                ]]
+            });
+
+            core.loadQuery('@ViewBag.queryString');
+        });
+    </script>
+</body>
+</html>

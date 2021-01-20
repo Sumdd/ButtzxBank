@@ -176,9 +176,10 @@
                         queryString: core.queryString()
                     },
                     success: function (data) {
-                        console.log(data);
                         if (data.status * 1 === 0) {
-                            $('#authToken').val(data.data);
+                            core.layInfo(data.msg);
+                        } else {
+                            core.layWarn(data.msg);
                         }
                     }
                 });

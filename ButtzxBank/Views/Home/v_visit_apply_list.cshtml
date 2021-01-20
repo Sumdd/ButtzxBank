@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
+  
 </head>
 <body>
     <div class="layui-header">
@@ -15,22 +18,21 @@
             @Html.Partial("~/Views/Home/P_NAV.cshtml")
         </ul>
     </div>
+
     <div class="layui-card">
         <div class="layui-card-header">
-            查询条件<span class="lay-title-span">*每天限查10次</span>
+            查询条件
         </div>
         <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
             <form class="layui-form" lay-filter="defaultSearch">
+                
                 <div class="layui-inline">
-                    <label class="layui-form-label" title="appId">appId</label>
+                    <label class="layui-form-label" title="状态">状态</label>
                     <div class="layui-input-block">
-                        <input type="text" name="appId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="01036L8" />
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label" title="查询原因">查询原因</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="reason" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <select name="status"  lay-verType="tips" autocomplete="off">
+                            <option value="1">待复核</option>
+                            <option value="2">已复核</option>
+                        </select>
                     </div>
                 </div>
             </form>
@@ -51,7 +53,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_user_sync_token")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_visit_apply_list")';
 
             table.render({
                 size: 'sm',
@@ -68,9 +70,14 @@
                 cols: [[
                     { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
+                    { field: 'visitId', title: '外访记录ID' },
+                    { field: 'caseId', title: '案件号' },
                     { field: 'agentId', title: '委外机构网点代码' },
-                    { field: 'userId', title: '催收员用户Id' },
-                    { field: 'userToken', title: '催收员用户令牌' }
+                    { field: 'decodeType', title: '明文类型' },
+                    { field: 'desValue', title: '脱敏值' },
+                    { field: 'outTime', title: '外访时间' },
+                    { field: 'custName', title: '客户姓名' },
+                    { field: 'userId', title: '外访人' }
                 ]]
             });
 

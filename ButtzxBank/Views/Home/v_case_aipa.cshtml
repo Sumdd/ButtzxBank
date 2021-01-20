@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
+    
 </head>
 <body>
     <div class="layui-header">
@@ -15,26 +17,41 @@
             @Html.Partial("~/Views/Home/P_NAV.cshtml")
         </ul>
     </div>
+
     <div class="layui-card">
         <div class="layui-card-header">
-            查询条件<span class="lay-title-span">*每天限查10次</span>
+            查询条件
         </div>
         <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
             <form class="layui-form" lay-filter="defaultSearch">
                 <div class="layui-inline">
-                    <label class="layui-form-label" title="appId">appId</label>
+                    <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="appId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="01036L8" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label" title="查询原因">查询原因</label>
+                    <label class="layui-form-label" title="卡号">卡号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="reason" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="cardId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="起始页码">起始页码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="start" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="每页条数">每页条数</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="limit" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+
             </form>
         </div>
+
         <div class="layui-card-body">
             <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
         </div>
@@ -51,7 +68,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_user_sync_token")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
 
             table.render({
                 size: 'sm',
@@ -66,11 +83,16 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'numbers', fixed: 'left' },
+                    { type: 'acctIdENC', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
-                    { field: 'agentId', title: '委外机构网点代码' },
-                    { field: 'userId', title: '催收员用户Id' },
-                    { field: 'userToken', title: '催收员用户令牌' }
+                    { field: 'acctIdENC', title: '账号' },
+                    { field: 'acctIdDES', title: '账户号' },
+                    { field: 'cardIdENC', title: '卡号' },
+                    { field: 'cardIdDES', title: '卡号' },
+                    { field: 'txnDate', title: '交易日期' },
+                    { field: 'txnDesc', title: '交易描述' },
+                    { field: 'posAmt', title: '交易金额' },
+                    { field: 'txnCurrCode', title: '交易货币' }
                 ]]
             });
 

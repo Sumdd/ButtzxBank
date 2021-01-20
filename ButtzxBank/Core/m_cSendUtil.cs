@@ -70,11 +70,19 @@ namespace ButtzxBank
             m_pJObject.Add("noData", false);
             if (m_pJObject.Property("data") != null)
             {
-                JArray m_pJArray = JArray.Parse(m_pJObject["data"].ToString());
-                if (m_pJArray.Count <= 0)
+                JToken m_pJToken = m_pJObject["data"];
+                switch (m_pJToken.Type)
                 {
-                    m_pJObject.Remove("data");
-                    m_pJObject["noData"] = true;
+                    case JTokenType.Array:
+                        JArray m_pJArray = JArray.Parse(m_pJObject["data"].ToString());
+                        if (m_pJArray.Count <= 0)
+                        {
+                            m_pJObject["noData"] = true;
+                        }
+                        break;
+                    default:
+                        m_pJObject["noData"] = false;
+                        break;
                 }
             }
             Dictionary<string, object> resultMap = m_pJObject.ToObject<Dictionary<string, object>>();

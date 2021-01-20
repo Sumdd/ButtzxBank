@@ -377,6 +377,69 @@
   <ItemGroup>
     <Content Include="Views\Home\v_user_sync_info.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_case_info.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_acct_list.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_maininfo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_maininfo_addition.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_maininfo_phone_list.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_maininfo_address_list.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_case_aipa.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_case_realtime_repay.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_case_etp.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_coll_record_history.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_action_submit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_phone_update.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_cust_address_update.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_visit_apply_decode.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_visit_apply_decode_delay.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_visit_apply_list.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_visit_apply_review.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_apply_decode.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_apply_list.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_apply_review.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\v_visit_record_list.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

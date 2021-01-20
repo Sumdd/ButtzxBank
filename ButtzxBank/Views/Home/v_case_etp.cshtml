@@ -1,0 +1,129 @@
+﻿
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
+    <style>
+        .layui-form-label {
+            width: 190px;
+        }
+
+        .layui-input-block {
+            margin-left: 220px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-header">
+        <ul class="layui-nav layui-bg-green">
+            <li class="layui-nav-item">
+                <label>@ViewBag.Title</label>
+            </li>
+            @Html.Partial("~/Views/Home/P_NAV.cshtml")
+        </ul>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">
+            查询条件
+        </div>
+        <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
+            <form class="layui-form" lay-filter="defaultSearch">
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="用户令牌">用户令牌</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="卡号">卡号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="cardId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="币种">币种</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="currency" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="交易起始日期">交易起始日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="startDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="交易结束日期">交易结束日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="endDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="起始页码">起始页码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="start" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="每页条数">每页条数</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="limit" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="layui-card-body">
+            <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/layui/layui.js")"></script>
+    <script>
+        layui.config({
+            base: '@Url.Content("~/layui/modules/")'
+        }).use(['element', 'form', 'table', 'layer', 'core'], function () {
+            var $ = layui.jquery,
+                element = layui.element,
+                core = layui.core,
+                layer = layui.layer,
+                form = layui.form,
+                table = layui.table;
+
+            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
+
+            table.render({
+                size: 'sm',
+                elem: '#defaultTable',
+                id: 'defaultTable',
+                method: 'post',
+                where: {
+                    queryString: core.queryString()
+                },
+                page: true,
+                even: true,
+                autoSort: false,
+                cellMinWidth: 80,
+                cols: [[
+                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'acctIdENC', title: '账号' },
+                    { field: 'acctIdDES', title: '账户号' },
+                    { field: 'cardId', title: '卡号' },
+                    { field: 'txnDate', title: '交易日期' },
+                    { field: 'posDate', title: '入账日期' },
+                    { field: 'txnDesc', title: '交易描述' },
+                    { field: 'posAmt', title: '入账金额' },
+                    { field: 'txnCurrCode', title: '交易货币' }
+                ]]
+            });
+
+            core.loadQuery('@ViewBag.queryString');
+        });
+    </script>
+</body>
+</html>
