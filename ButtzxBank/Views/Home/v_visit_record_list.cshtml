@@ -47,26 +47,26 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="委外机构网点代码">委外机构网点代码</label>
                     <div class="layui-input-block">
-                        <input type="text" name="agentId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="agentId" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label" title="卡号">卡号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="cardNo" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="cardNo" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label" title="客户姓名">客户姓名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="custName" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="custName" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
 
                 <div class="layui-inline">
                     <label class="layui-form-label" title="证件号码">证件号码</label>
                     <div class="layui-input-block">
-                        <input type="text" name="cid" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="cid" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -78,13 +78,13 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="手机号码">手机号码</label>
                     <div class="layui-input-block">
-                        <input type="text" name="phone" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="phone" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label" title="外访人">外访人</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userId" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
             </form>
@@ -121,7 +121,7 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'visitId', title: '外访记录ID' },
                     { field: 'outBeginTime', title: '外访开始时间' },

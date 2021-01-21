@@ -24,13 +24,22 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="appId">appId</label>
                     <div class="layui-input-block">
-                        <input type="text" name="appId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="01036L8" />
+                        <input type="text" name="appId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(m_cConfigConstants.APP_ID)" />
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label" title="查询原因">查询原因</label>
                     <div class="layui-input-block">
                         <input type="text" name="reason" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="查询模式">查询模式</label>
+                    <div class="layui-input-block">
+                        <select name="searchMode" required lay-verify="required" lay-verType="tips" autocomplete="off">
+                            <option value="1">缓存</option>
+                            <option value="2">接口</option>
+                        </select>
                     </div>
                 </div>
             </form>
@@ -41,6 +50,9 @@
     </div>
     <script src="@Url.Content("~/layui/layui.js")"></script>
     <script>
+
+        var useToken;
+
         layui.config({
             base: '@Url.Content("~/layui/modules/")'
         }).use(['element', 'form', 'table', 'layer', 'core'], function () {
@@ -50,6 +62,31 @@
                 layer = layui.layer,
                 form = layui.form,
                 table = layui.table;
+
+            //使用Token
+            useToken = function (that, userToken) {
+                //提交
+                core.req({
+                    that: $(that),
+                    url: '@Url.Content("~/Home/Add")',
+                    data: {
+                        queryString: (function () {
+                            return JSON.stringify({
+                                userToken: userToken
+                            })
+                        })()
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status * 1 === 0) {
+                            core.layInfo(data.msg);
+                            $('#userToken').text('Token:' + data.data);
+                        } else {
+                            core.layWarn(data.msg);
+                        }
+                    }
+                });
+            };
 
             core.defaultQuery.url = '@Url.Content("~/Home/f_user_sync_token")';
 
@@ -70,7 +107,12 @@
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'agentId', title: '委外机构网点代码' },
                     { field: 'userId', title: '催收员用户Id' },
-                    { field: 'userToken', title: '催收员用户令牌' }
+                    { field: 'userToken', title: '催收员用户令牌' },
+                    {
+                        field: 'op', title: '操作', templet: function (d) {
+                            return '<a href="javascript:;" onclick="useToken(this,\'' + d.userToken + '\')" style="color: #c00;">使用令牌</a>'
+                        }
+                    },
                 ]]
             });
 

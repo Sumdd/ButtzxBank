@@ -27,7 +27,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -51,13 +51,13 @@
 
             </form>
         </div>
-        
+
         <div class="layui-card-body">
             <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
         </div>
     </div>
-        <script src="@Url.Content("~/layui/layui.js")"></script>
-        <script>
+    <script src="@Url.Content("~/layui/layui.js")"></script>
+    <script>
         layui.config({
             base: '@Url.Content("~/layui/modules/")'
         }).use(['element', 'form', 'table', 'layer', 'core'], function () {
@@ -68,7 +68,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_cust_maininfo_address_list")';
 
             table.render({
                 size: 'sm',
@@ -83,12 +83,12 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'addressId', title: '地址ID' },
                     { field: 'name', title: '姓名' },
-                    { field: 'relation', title: '关系类型' },
-                    { field: 'addressType', title: '地址类型' },
+                    { field: 'relation', title: '关系类型(1-本人 2-亲属 3-非亲属)' },
+                    { field: 'addressType', title: '地址类型(1-住宅地址;2-公司地址;3-通讯地址 4-户籍地址 5-其它)' },
                     { field: 'addressDES', title: '地址' },
                     { field: 'origin', title: '数据来源(1-卡中心;2-手工录入)' }
                 ]]
@@ -96,6 +96,6 @@
 
             core.loadQuery('@ViewBag.queryString');
         });
-        </script>
+    </script>
 </body>
 </html>

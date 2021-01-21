@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
-    
+
 </head>
 <body>
     <div class="layui-header">
@@ -26,7 +26,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -53,7 +53,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_case_info")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_cust_maininfo")';
 
             table.render({
                 size: 'sm',

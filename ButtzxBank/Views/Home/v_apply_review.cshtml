@@ -31,23 +31,22 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="待审核ID">待审核ID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="reviewId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="reviewId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-              
+
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="审核结果">审核结果</label>
                     <div class="layui-input-block">
-                        <select name="result" lay-verType="tips" autocomplete="off">
+                        <select name="result" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="0">不通过</option>
                             <option value="1">通过</option>
-                         
                         </select>
                     </div>
                 </div>
@@ -57,7 +56,6 @@
                         <input type="text" name="comment" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formSumit" id="formSumit">立即提交</button>

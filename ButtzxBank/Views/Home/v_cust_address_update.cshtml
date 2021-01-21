@@ -31,25 +31,25 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="案件号">案件号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="caseId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="姓名">姓名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="name" autocomplete="off" class="layui-input" />
+                        <input type="text" name="name" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="关系类型">关系类型</label>
                     <div class="layui-input-block">
-                        <select name="relation"  lay-verType="tips" autocomplete="off">
+                        <select name="relation" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="1">本人</option>
                             <option value="2">亲属</option>
                             <option value="3">非亲属</option>
@@ -59,7 +59,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="地址类型">地址类型</label>
                     <div class="layui-input-block">
-                        <select name="addressType" lay-verType="tips" autocomplete="off">
+                        <select name="addressType" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="1">公司地址</option>
                             <option value="2">住宅地址</option>
                             <option value="3">通讯地址</option>
@@ -71,7 +71,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="地址">地址</label>
                     <div class="layui-input-block">
-                        <input type="text" name="address" autocomplete="off" class="layui-input" />
+                        <input type="text" name="address" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">

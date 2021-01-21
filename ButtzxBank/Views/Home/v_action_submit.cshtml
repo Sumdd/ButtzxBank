@@ -26,27 +26,29 @@
         </ul>
     </div>
     <div class="layui-card">
+        <div class="layui-card-header">
+            录入
+        </div>
         <div class="layui-card-header layuiadmin-card-header-auto">
             <form class="layui-form" lay-filter="defaultSearch">
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="案件号">案件号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="caseId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="行动日期">行动日期</label>
                     <div class="layui-input-block">
-                        <input type="text" name="actionDate" autocomplete="off" class="layui-input datetimepicker" />
+                        <input type="text" name="actionDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datetimepicker" />
                     </div>
                 </div>
-               
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="约会日期">约会日期</label>
                     <div class="layui-input-block">
@@ -62,7 +64,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="行动代码">行动代码</label>
                     <div class="layui-input-block">
-                        <input type="text" name="actionCode" autocomplete="off" class="layui-input" />
+                        <input type="text" name="actionCode" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -80,10 +82,9 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="备注">备注</label>
                     <div class="layui-input-block">
-                        <input type="text" name="comment" autocomplete="off" class="layui-input" />
+                        <input type="text" name="comment" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-               
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formSumit" id="formSumit">立即提交</button>

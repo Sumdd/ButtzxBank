@@ -31,22 +31,21 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="外访记录ID">外访记录ID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="visitId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="visitId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="外访时间">外访时间</label>
                     <div class="layui-input-block">
-                        <input type="text" name="outTime" autocomplete="off" class="layui-input datetimepicker" />
+                        <input type="text" name="outTime" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datetimepicker" />
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formSumit" id="formSumit">立即提交</button>

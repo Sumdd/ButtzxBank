@@ -30,25 +30,25 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="案件号">案件号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="caseId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="脱敏值">脱敏值</label>
                     <div class="layui-input-block">
-                        <input type="text" name="desValue" autocomplete="off" class="layui-input" />
+                        <input type="text" name="desValue" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="明文类型">明文类型</label>
                     <div class="layui-input-block">
-                        <select name="decodeType" lay-verType="tips" autocomplete="off">
+                        <select name="decodeType" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="0000">证件号码</option>
                             <option value="0001">账户号</option>
                             <option value="0011">公安户籍地址</option>
@@ -57,7 +57,7 @@
                             <option value="0101">邮寄地址</option>
                             <option value="0102">积分地址</option>
                             <option value="0211">本人单位地址</option>
-                            <option value="0212">本人住宅地主</option>
+                            <option value="0212">本人住宅地址</option>
                             <option value="0213">本人通讯地址</option>
                             <option value="0214">本人户籍地址</option>
                             <option value="0215">本人其它地址</option>
@@ -80,7 +80,6 @@
                         <input type="text" name="applyId" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formSumit" id="formSumit">立即提交</button>
@@ -109,7 +108,7 @@
             form.on('submit(formSumit)', function (data) {
                 core.req({
                     that: $('#formSumit'),
-                    url: '@Url.Content("~/home/f_visit_apply_review")',
+                    url: '@Url.Content("~/Home/f_apply_decode")',
                     data: {
                         queryString: core.queryString()
                     },

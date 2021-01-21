@@ -26,36 +26,38 @@
         </ul>
     </div>
     <div class="layui-card">
+        <div class="layui-card-header">
+            录入
+        </div>
         <div class="layui-card-header layuiadmin-card-header-auto">
             <form class="layui-form" lay-filter="defaultSearch">
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="外访记录ID">外访记录ID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="visitId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="visitId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="地址类型">地址类型</label>
                     <div class="layui-input-block">
-                        <select name="decodeType" lay-verType="tips" autocomplete="off">
+                        <select name="decodeType" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="0">不通过</option>
                             <option value="1">通过</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label" title="审核备注">审核备注</label>
+                    <label class="layui-form-label" title="审核备注(255)">审核备注(255)</label>
                     <div class="layui-input-block">
                         <input type="text" name="comment" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="formSumit" id="formSumit">立即提交</button>

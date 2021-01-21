@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
-    
+
 </head>
 <body>
     <div class="layui-header">
@@ -27,7 +27,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -68,7 +68,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_case_realtime_repay")';
 
             table.render({
                 size: 'sm',
@@ -83,7 +83,7 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'cardIdENC', title: '账号' },
                     { field: 'cardIdDES', title: '账户号' },

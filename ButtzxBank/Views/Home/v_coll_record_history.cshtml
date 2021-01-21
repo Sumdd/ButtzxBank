@@ -32,15 +32,12 @@
         </div>
         <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
             <form class="layui-form" lay-filter="defaultSearch">
-
-
                 <div class="layui-inline">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
-             
                 <div class="layui-inline">
                     <label class="layui-form-label" title="起始页码">起始页码</label>
                     <div class="layui-input-block">
@@ -82,7 +79,6 @@
                         </select>
                     </div>
                 </div>
-
             </form>
         </div>
 
@@ -102,7 +98,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_acct_list")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_coll_record_history")';
 
             table.render({
                 size: 'sm',
@@ -117,7 +113,7 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'caseId', title: '案件号' },
                     { field: 'actionName', title: '行动名称（行动代码）' },
@@ -135,7 +131,7 @@
                     { field: 'actionId', title: '行动代号' },
                     { field: 'actionCommentDES', title: '备注' },
                     { field: 'acctIdDES', title: '账户（户口号）' },
-                      { field: 'collType', title: '催收方式（作业方式）' },
+                    { field: 'collType', title: '催收方式（作业方式）' },
                     { field: 'taskFinishedDate', title: '任务结束时间' },
                     { field: 'appointTime', title: '约会时间' }
                 ]]

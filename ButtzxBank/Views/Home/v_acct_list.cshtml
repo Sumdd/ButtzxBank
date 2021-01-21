@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
-  
+
 </head>
 <body>
     <div class="layui-header">
@@ -27,7 +27,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -39,7 +39,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="账号">账号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="acctId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
+                        <input type="text" name="acctId" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -47,25 +47,13 @@
                     <div class="layui-input-block">
                         <input type="text" name="start" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
-                </div><br />
+                </div>
                 <div class="layui-inline">
                     <label class="layui-form-label" title="每页条数">每页条数</label>
                     <div class="layui-input-block">
                         <input type="text" name="limit" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
-                @*<div class="layui-inline">
-                    <label class="layui-form-label" title="开始日期">开始日期</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="startDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label" title="结束日期">结束日期</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="endDate" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datepicker" />
-                    </div>
-                </div>*@
             </form>
         </div>
         <div class="layui-card-body">
@@ -150,7 +138,7 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'acctIdENC', title: '账号' },
                     { field: 'acctIdDES', title: '账号（脱敏）' },

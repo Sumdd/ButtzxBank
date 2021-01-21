@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>@ViewBag.Title</title>
     <link href="@Url.Content("~/layui/css/layui.css")" rel="stylesheet" />
-   
+
 </head>
 <body>
     <div class="layui-header">
@@ -27,19 +27,19 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" title="状态">状态</label>
                     <div class="layui-input-block">
-                        <select name="status"  lay-verType="tips" autocomplete="off">
+                        <select name="status" lay-verType="tips" autocomplete="off">
                             <option value="1">待复核</option>
                             <option value="2">已复核</option>
                         </select>
                     </div>
                 </div>
-             
+
             </form>
         </div>
         <div class="layui-card-body">
             <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
         </div>
-        
+
     </div>
     <script src="@Url.Content("~/layui/layui.js")"></script>
     <script>
@@ -68,7 +68,7 @@
                 autoSort: false,
                 cellMinWidth: 80,
                 cols: [[
-                    { type: 'acctIdENC', fixed: 'left' },
+                    { type: 'numbers', fixed: 'left' },
                     { type: 'checkbox', fixed: 'left' },
                     { field: 'reviewId', title: '待审核ID' },
                     { field: 'caseId', title: '案件号' },
@@ -77,8 +77,7 @@
                     { field: 'desValue', title: '脱敏值' },
                     { field: 'custName', title: '客户姓名' },
                     { field: 'createDate', title: '申请时间' },
-                    { field: 'endDate', title: '结束时间' },
-                   
+                    { field: 'endDate', title: '结束时间' }
                 ]]
             });
 

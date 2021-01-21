@@ -31,26 +31,26 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="用户令牌">用户令牌</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userToken" autocomplete="off" class="layui-input" />
+                        <input type="text" name="userToken" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" value="@(Session["userToken"])" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="案件号">案件号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="caseId" autocomplete="off" class="layui-input" />
+                        <input type="text" name="caseId" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="外访时间">外访时间</label>
                     <div class="layui-input-block">
-                        <input type="text" name="outTime" autocomplete="off" class="layui-input datetimepicker" />
+                        <input type="text" name="outTime" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input datetimepicker" />
                     </div>
                 </div>
-              
+
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="地址类型">地址类型</label>
                     <div class="layui-input-block">
-                        <select name="decodeType" lay-verType="tips" autocomplete="off">
+                        <select name="decodeType" required lay-verify="required" lay-verType="tips" autocomplete="off">
                             <option value="0011">公安户籍地址</option>
                             <option value="0012">服务住所地址</option>
                             <option value="0013">所管辖派出所</option>
@@ -74,17 +74,23 @@
                         </select>
                     </div>
                 </div>
-              
+
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="脱敏值">脱敏值</label>
                     <div class="layui-input-block">
-                        <input type="text" name="desValue" autocomplete="off" class="layui-input" />
+                        <input type="text" name="desValue" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" title="申请明文值ID">申请明文值ID</label>
                     <div class="layui-input-block">
                         <input type="text" name="applyId" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" title="外访记录ID">外访记录ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="visitId" readonly autocomplete="off" class="layui-input" />
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -115,12 +121,13 @@
             form.on('submit(formSumit)', function (data) {
                 core.req({
                     that: $('#formSumit'),
-                    url: '@Url.Content("~/home/f_visit_apply_decode")',
+                    url: '@Url.Content("~/Home/f_visit_apply_decode")',
                     data: {
                         queryString: core.queryString()
                     },
                     success: function (data) {
                         if (data.status * 1 === 0) {
+                            $("input[name=\"visitId\"]").val(data.data[0].visitId);
                             core.layInfo(data.msg);
                         } else {
                             core.layWarn(data.msg);

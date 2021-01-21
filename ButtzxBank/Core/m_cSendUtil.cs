@@ -13,7 +13,7 @@ namespace ButtzxBank
     public class m_cSendUtil
     {
         //封装发送
-        public static Dictionary<string, object> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request)
+        public static Dictionary<string, object> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request, ref string retCode, ref string retMsg, bool m_bNullIsNoData = true, bool m_bUseNoData = false)
         {
             if (bizData == null)
                 throw new ArgumentNullException("bizData");
@@ -55,7 +55,6 @@ namespace ButtzxBank
             bizData.Add(m_cConfigConstants.SIGN, m_cRSA.getSign(signStr));
             //参数化
             string respEnBody = m_cSendUtil.sendPostReq(interfaceId, m_cSendUtil.convertToUrlParam(bizData), encryptStr);
-            Log.Instance.Debug($"最后的响应数据原文:{respEnBody}");
 
             //解密
             string respBody = respEnBody;
@@ -63,30 +62,44 @@ namespace ButtzxBank
             {
                 respBody = m_cRSA.DecryptByPrivate(respEnBody);
             }
+            else
+            {
+                ///如果有错误再显示报文原文
+                Log.Instance.Debug($"最后的响应数据原文:{respEnBody}");
+            }
             Log.Instance.Debug($"最后的响应数据:{respBody}");
 
             //验证
             JObject m_pJObject = JObject.Parse(respBody);
-            m_pJObject.Add("noData", false);
-            if (m_pJObject.Property("data") != null)
+
+            ///优化空数据响应,去掉
+            if (m_bUseNoData)
             {
-                JToken m_pJToken = m_pJObject["data"];
-                switch (m_pJToken.Type)
+                m_pJObject.Add("noData", false);
+                if (m_pJObject.Property("data") != null)
                 {
-                    case JTokenType.Array:
-                        JArray m_pJArray = JArray.Parse(m_pJObject["data"].ToString());
-                        if (m_pJArray.Count <= 0)
-                        {
-                            m_pJObject["noData"] = true;
-                        }
-                        break;
-                    default:
-                        m_pJObject["noData"] = false;
-                        break;
+                    JToken m_pJToken = m_pJObject["data"];
+                    switch (m_pJToken.Type)
+                    {
+                        case JTokenType.Array:
+                            JArray m_pJArray = JArray.Parse(m_pJObject["data"].ToString());
+                            if (m_pJArray.Count <= 0)
+                            {
+                                m_pJObject["noData"] = true;
+                            }
+                            break;
+                        case JTokenType.Null:
+                            if (m_bNullIsNoData) m_pJObject["noData"] = true;
+                            break;
+                        default:
+                            m_pJObject["noData"] = false;
+                            break;
+                    }
                 }
             }
+
             Dictionary<string, object> resultMap = m_pJObject.ToObject<Dictionary<string, object>>();
-            respVerify(resultMap);
+            respVerify(resultMap, ref retCode, ref retMsg, m_bUseNoData);
 
             return resultMap;
         }
@@ -131,20 +144,31 @@ namespace ButtzxBank
         }
 
         //验签
-        public static void respVerify(Dictionary<string, object> resultMap)
+        public static void respVerify(Dictionary<string, object> resultMap, ref string retCode, ref string retMsg, bool m_bUseNoData)
         {
-            //15、获取网关响应码
-            string retCode = resultMap["retCode"]?.ToString();
-            Log.Instance.Debug($"状态码:{retCode}");
+            //获取网关响应码
+            retCode = resultMap["retCode"]?.ToString();
+            //网关响应消息
+            retMsg = resultMap["retMsg"]?.ToString();
+
+            ///此处有个疑问,抛出异常前能否对ref参数赋值
+
             if (!"0".Equals(retCode))
             {
-                throw new Exception(resultMap["retMsg"]?.ToString());
+                if (string.IsNullOrWhiteSpace(retMsg)) retMsg = "非成功";
+                throw new Exception(retMsg);
             }
-            //16、空数据响应
-            bool noData = Convert.ToBoolean(resultMap["noData"]);
-            if (noData)
+
+            if (string.IsNullOrWhiteSpace(retMsg)) retMsg = "成功";
+
+            ///优化空数据响应,去掉
+            if (m_bUseNoData)
             {
-                throw new Exception("Err空数据");
+                bool noData = Convert.ToBoolean(resultMap["noData"]);
+                if (noData)
+                {
+                    throw new Exception("Err空数据");
+                }
             }
         }
 
