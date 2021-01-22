@@ -216,6 +216,8 @@
     <Compile Include="Core\m_cRSA.cs" />
     <Compile Include="Core\m_cSendUtil.cs" />
     <Compile Include="Core\m_cSettings.cs" />
+    <Compile Include="Core\m_cSQL.cs" />
+    <Compile Include="Core\m_cSugar.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
