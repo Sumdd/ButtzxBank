@@ -771,12 +771,18 @@ namespace ButtzxBank.Controllers
                 encryptInfo.Add("actionDate", actionDate);
                 ///约会日期
                 string appointDate = m_cQuery.m_fGetQueryString(m_lQueryList, "appointDate");
-                appointDate = appointDate.Replace("-", "").Replace(" ", "");
-                encryptInfo.Add("appointDate", appointDate);
+                if (!string.IsNullOrWhiteSpace(appointDate))
+                {
+                    appointDate = appointDate.Replace("-", "").Replace(" ", "");
+                    encryptInfo.Add("appointDate", appointDate);
+                }
                 ///约会日期
                 string appointTime = m_cQuery.m_fGetQueryString(m_lQueryList, "appointTime");
-                appointDate = appointDate.Replace(":", "");
-                encryptInfo.Add("appointTime", appointTime);
+                if (!string.IsNullOrWhiteSpace(appointTime))
+                {
+                    appointTime = appointTime.Replace(":", "");
+                    encryptInfo.Add("appointTime", appointTime);
+                }
                 ///行动代码
                 encryptInfo.Add("actionCode", m_cQuery.m_fGetQueryString(m_lQueryList, "actionCode"));
                 ///账户号
