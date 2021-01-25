@@ -22,7 +22,9 @@ namespace ButtzxBank
             ///客户端IP
             bizData.Add(m_cConfigConstants.CLIENTIP, m_cCore.ToEncodingString(request.UserHostAddress));
             ///客户端浏览器信息
-            bizData.Add(m_cConfigConstants.USERAGENT, m_cCore.ToEncodingString(request.UserAgent));
+            string UserAgent = request.UserAgent;
+            if (string.IsNullOrWhiteSpace(UserAgent)) UserAgent = "VS";
+            bizData.Add(m_cConfigConstants.USERAGENT, m_cCore.ToEncodingString(UserAgent));
             ///客户端设备类型
             bizData.Add(m_cConfigConstants.DEVICETYPE, request.Browser.IsMobileDevice ? "1" : "3");
             ///设备唯一标识,N
