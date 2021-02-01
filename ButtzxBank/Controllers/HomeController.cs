@@ -54,6 +54,7 @@ namespace ButtzxBank.Controllers
 
                 JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
                 msg = $"用户令牌数据同步成功,更新数据量{m_pData["count"]}";
+                data = m_pData["count"];
 
                 return rJson();
             }
@@ -110,7 +111,6 @@ namespace ButtzxBank.Controllers
                             retMsg = msg;
 
                             return rJson();
-
                             #endregion
                         }
                     default:

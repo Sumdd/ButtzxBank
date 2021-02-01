@@ -16,6 +16,8 @@ namespace ButtzxBank
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            ///任务计划
+            m_cQuartzJobScheduler.Start();
         }
     }
 }
