@@ -41,7 +41,7 @@ namespace ButtzxBank
                 {
                     m_bJobDoing = true;
 
-                    Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobResqToken][Execute][请在此处书写“请求用户令牌”逻辑]");
+                    Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobResqToken][Execute][请在此处书写“请求用户令牌”逻辑]", LogTyper.JobLogger);
 
                     ///
 
@@ -57,7 +57,7 @@ namespace ButtzxBank
             }
             else
             {
-                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobResqToken][Execute][任务执行中,跳出]");
+                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobResqToken][Execute][任务执行中,跳出]", LogTyper.JobLogger);
             }
         }
     }
@@ -76,7 +76,7 @@ namespace ButtzxBank
                 {
                     m_bJobDoing = true;
 
-                    Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute]请在此处书写“提交催记”逻辑]");
+                    Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute]请在此处书写“提交催记”逻辑]", LogTyper.JobLogger);
 
                 }
                 catch (Exception ex)
@@ -90,7 +90,7 @@ namespace ButtzxBank
             }
             else
             {
-                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute][任务执行中,跳出]");
+                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute][任务执行中,跳出]", LogTyper.JobLogger);
             }
         }
     }

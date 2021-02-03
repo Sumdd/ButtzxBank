@@ -22,12 +22,15 @@ namespace ButtzxBank
         private Log()
         {
             log4net.Config.XmlConfigurator.Configure();
-            log4 = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+            log4 = new List<ILog>();
+            log4.Add(log4net.LogManager.GetLogger($"{LogTyper.LogLogger}"));
+            log4.Add(log4net.LogManager.GetLogger($"{LogTyper.JobLogger}"));
         }
         /// <summary>
         /// 私人静态实例
         /// </summary>
-        private log4net.ILog log4 = null;
+        private List<log4net.ILog> log4 = null;
         /// <summary>
         /// 私人静态实例
         /// </summary>
@@ -46,46 +49,61 @@ namespace ButtzxBank
         /// 调试
         /// </summary>
         /// <param name="msg">错误信息对象</param>
-        public void Debug(object msg)
+        public void Debug(object msg, LogTyper lt = LogTyper.LogLogger)
         {
             if (m_Loglevel >= 5)
-                log4.Debug(msg);
+            {
+                ILog log = log4.Find(x => x.Logger.Name == lt.ToString());
+                if (log != null) log.Debug(msg);
+            }
         }
         /// <summary>
         /// 信息
         /// </summary>
         /// <param name="msg">信息字符串</param>
-        public void Success(string msg)
+        public void Success(string msg, LogTyper lt = LogTyper.LogLogger)
         {
             if (m_Loglevel >= 4)
-                log4.Info(msg);
+            {
+                ILog log = log4.Find(x => x.Logger.Name == lt.ToString());
+                if (log != null) log.Info(msg);
+            }
         }
         /// <summary>
         /// 警告
         /// </summary>
         /// <param name="msg">警告信息字符串</param>
-        public void Warn(string msg)
+        public void Warn(string msg, LogTyper lt = LogTyper.LogLogger)
         {
             if (m_Loglevel >= 3)
-                log4.Warn(msg);
+            {
+                ILog log = log4.Find(x => x.Logger.Name == lt.ToString());
+                if (log != null) log.Warn(msg);
+            }
         }
         /// <summary>
         /// 错误
         /// </summary>
         /// <param name="msg">错误信息字符串</param>
-        public void Error(string msg)
+        public void Error(string msg, LogTyper lt = LogTyper.LogLogger)
         {
             if (m_Loglevel >= 2)
-                log4.Error(msg);
+            {
+                ILog log = log4.Find(x => x.Logger.Name == lt.ToString());
+                if (log != null) log.Error(msg);
+            }
         }
         /// <summary>
         /// 失败
         /// </summary>
         /// <param name="msg">失败信息字符串</param>
-        public void Fail(string msg)
+        public void Fail(string msg, LogTyper lt = LogTyper.LogLogger)
         {
             if (m_Loglevel >= 1)
-                log4.Fatal(msg);
+            {
+                ILog log = log4.Find(x => x.Logger.Name == lt.ToString());
+                if (log != null) log.Fatal(msg);
+            }
         }
         /// <summary>
         /// 设置日志级别
@@ -94,7 +112,22 @@ namespace ButtzxBank
         public void SetLogLevel(int Loglevel)
         {
             m_Loglevel = Loglevel;
-            log4.Info($"[AutoxAsr][Log][SetLogLevel][设置日志级别为{Loglevel}[ALL(>=5)|DEBUG(5)|INFO(4)|WARN(3)|ERROR(2)|FATAL(1)|OFF(<=0)]]");
+            foreach (ILog log in log4)
+            {
+                log.Info($"[AutoxAsr][Log][SetLogLevel][设置日志级别为{Loglevel}[ALL(>=5)|DEBUG(5)|INFO(4)|WARN(3)|ERROR(2)|FATAL(1)|OFF(<=0)]]");
+            }
         }
+    }
+
+    public enum LogTyper
+    {
+        /// <summary>
+        /// 默认日志类型
+        /// </summary>
+        LogLogger,
+        /// <summary>
+        /// 任务计划日志
+        /// </summary>
+        JobLogger
     }
 }

@@ -482,6 +482,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\WebConfig.pubxml" />
+    <Content Include="Views\Home\v_casepool_list_import.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
