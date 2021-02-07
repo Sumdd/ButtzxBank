@@ -26,6 +26,7 @@ namespace ButtzxBank
             log4 = new List<ILog>();
             log4.Add(log4net.LogManager.GetLogger($"{LogTyper.LogLogger}"));
             log4.Add(log4net.LogManager.GetLogger($"{LogTyper.JobLogger}"));
+            log4.Add(log4net.LogManager.GetLogger($"{LogTyper.ProLogger}"));
         }
         /// <summary>
         /// 私人静态实例
@@ -114,7 +115,7 @@ namespace ButtzxBank
             m_Loglevel = Loglevel;
             foreach (ILog log in log4)
             {
-                log.Info($"[AutoxAsr][Log][SetLogLevel][设置日志级别为{Loglevel}[ALL(>=5)|DEBUG(5)|INFO(4)|WARN(3)|ERROR(2)|FATAL(1)|OFF(<=0)]]");
+                log.Info($"[ButtzxBank][Log][SetLogLevel][设置日志级别为{Loglevel}[ALL(>=5)|DEBUG(5)|INFO(4)|WARN(3)|ERROR(2)|FATAL(1)|OFF(<=0)]]");
             }
         }
     }
@@ -128,6 +129,10 @@ namespace ButtzxBank
         /// <summary>
         /// 任务计划日志
         /// </summary>
-        JobLogger
+        JobLogger,
+        /// <summary>
+        /// 拓展方法日志
+        /// </summary>
+        ProLogger
     }
 }
