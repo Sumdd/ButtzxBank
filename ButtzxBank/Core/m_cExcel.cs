@@ -103,5 +103,33 @@ namespace ButtzxBank
                 excelPackage.Save();
             }
         }
+
+        public static void m_fExport(string OutxlsPath, DataSet dt, string Format = null)
+        {
+            ///为了兼容下载,这里默认本目录下Output文件即可
+
+            string m_sOutxlsPath;
+            if (OutxlsPath.StartsWith("~")) m_sOutxlsPath = HttpContext.Current.Server.MapPath(OutxlsPath);
+            else m_sOutxlsPath = OutxlsPath;
+
+            FileInfo newFile = new FileInfo(m_sOutxlsPath);
+            if (!Directory.Exists(newFile.DirectoryName))
+            {
+                System.IO.Directory.CreateDirectory(newFile.DirectoryName);
+            }
+            using (ExcelPackage excelPackage = new ExcelPackage(newFile))
+            {
+                foreach (DataTable m_pDataTable in dt.Tables)
+                {
+                    ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets.Add("Arun");
+                    excelWorksheet.Name = m_pDataTable.TableName;
+                    excelWorksheet.Cells.Style.Font.Size = 11f;
+                    if (Format != null) excelWorksheet.Cells.Style.Numberformat.Format = Format;
+                    excelWorksheet.DefaultColWidth = 100;
+                    excelWorksheet.Cells["A1"].LoadFromDataTable(m_pDataTable, true);
+                }
+                excelPackage.Save();
+            }
+        }
     }
 }

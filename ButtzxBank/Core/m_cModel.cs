@@ -5,30 +5,9 @@ using System.Web;
 
 namespace ButtzxBank
 {
-    public class m_mAccts
+    public class connectionString
     {
-        public string acctNbr
-        {
-            get; set;
-        }
-        public List<m_mPlanlist> planlist
-        {
-            get; set;
-        }
-    }
-    public class m_mPlanlist
-    {
-        public string reducePeriods
-        {
-            get; set;
-        }
-        public string repayAmt
-        {
-            get; set;
-        }
-        public string repayDate
-        {
-            get; set;
-        }
+        public const string CenoSystem50 = "CenoSystem50";
+        public const string CenoSystem60 = "CenoSystem60";
     }
 }

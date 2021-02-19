@@ -2,7 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 
@@ -10,6 +12,12 @@ namespace ButtzxBank.Controllers
 {
     public class HomeController : Controller
     {
+        ///每页最大条数
+        private const int m_uPageSize = 50;
+
+        ///缓存
+        private HttpRequestBase m_pRequest;
+
         private int status;
         private string msg;
         private int count;
@@ -176,7 +184,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
 
@@ -1286,6 +1294,367 @@ namespace ButtzxBank.Controllers
         }
         #endregion
 
+        #region +++casepool_list_t 委外案件案池信息拓展
+        /// <summary>
+        /// casepool_list_t接口锁
+        /// </summary>
+        private static object casepool_list_t_lock = new object();
+
+        public ActionResult v_casepool_list_t(string queryString)
+        {
+            ViewBag.Title = "casepool_list_t 委外案件案池信息拓展";
+            ViewBag.queryString = HttpUtility.UrlEncode(queryString);
+            this.m_fGetThreadPoolState();
+            return View();
+        }
+
+        public JsonResult f_casepool_list_t(string queryString)
+        {
+            try
+            {
+                ///获取A、B、T各类Token
+                string Token = null;
+                int resultMode = 2;
+                List<m_cQuery> m_lQueryList = this.m_fSetAll(queryString, ref Token, ref resultMode);
+
+                ///以系统最后一条的rrn做开始,一页一条取得总条数,得到需要循环的页,下一页以该查询页的最后一个rrn做开始
+                HomeController m_pHome = new HomeController();
+                m_pHome.m_pRequest = this.Request;
+                JsonResult m_pJsonResult = m_pHome.f_casepool_list(1, 1, null, null, null, queryString);
+                JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
+
+                ///起始rrn
+                int rrn = 0;
+
+                ///判断结果
+                if (m_pJObject["status"].ToString().Equals("0"))
+                {
+                    ///总请求次数
+                    int m_uCount = Convert.ToInt32(m_pJObject["count"]);
+                    ///根据总条数计算线程请求总次数
+                    int m_uLastPageSize = m_uCount % m_uPageSize;
+                    int m_uResqPages = (m_uCount / m_uPageSize) + (m_uLastPageSize > 0 ? 1 : 0);
+
+                    if (m_uResqPages > 0)
+                    {
+                        #region ***委外案件池信息
+                        DataTable m_pCaseDT = new DataTable();
+                        m_pCaseDT.Columns.Add("flag", typeof(string));
+                        m_pCaseDT.Columns.Add("caseId", typeof(string));
+                        m_pCaseDT.Columns.Add("rrn", typeof(string));
+                        m_pCaseDT.Columns.Add("agentId", typeof(string));
+                        m_pCaseDT.Columns.Add("branchId", typeof(string));
+                        m_pCaseDT.Columns.Add("adjustAreaCode", typeof(string));
+                        m_pCaseDT.Columns.Add("afterAreaCode", typeof(string));
+                        m_pCaseDT.Columns.Add("batchNum", typeof(string));
+                        m_pCaseDT.Columns.Add("custName", typeof(string));
+                        m_pCaseDT.Columns.Add("cidDES", typeof(string));
+                        m_pCaseDT.Columns.Add("age", typeof(string));
+                        m_pCaseDT.Columns.Add("acctIdDES", typeof(string));
+                        m_pCaseDT.Columns.Add("acctIdENC", typeof(string));
+                        m_pCaseDT.Columns.Add("currency", typeof(string));
+                        m_pCaseDT.Columns.Add("gender", typeof(string));
+                        m_pCaseDT.Columns.Add("principalOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("balanceOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("lastBalanceOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("monthBalanceAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("overPeriod", typeof(string));
+                        m_pCaseDT.Columns.Add("targetPeriod", typeof(string));
+                        m_pCaseDT.Columns.Add("caseType", typeof(string));
+                        m_pCaseDT.Columns.Add("entrustStartDate", typeof(string));
+                        m_pCaseDT.Columns.Add("entrustEndDate", typeof(string));
+                        m_pCaseDT.Columns.Add("isSued", typeof(string));
+                        DataTable[] m_lCaseDT = new DataTable[m_uResqPages];
+                        #endregion
+
+                        bool[] m_lStatus = new bool[m_uResqPages];
+                        string[] m_lErrMsg = new string[m_uResqPages];
+
+                        ///仅使用1个
+                        ManualResetEvent[] m_lManualResetEvent = new ManualResetEvent[1];
+                        m_lManualResetEvent[0] = new ManualResetEvent(false);
+                        int m_uReset = m_uResqPages;
+
+                        for (int i = 1; i <= m_uResqPages; i++)
+                        {
+                            ///请求页码缓存
+                            int m_uResqPageIndex = i;
+                            ///缓存下标
+                            int m_uIndex = i - 1;
+
+                            m_lCaseDT[m_uIndex] = m_pCaseDT.Clone();
+
+                            ///此处不能使用线程池取数据,要求为单线程
+                            {
+                                ///打印下日志吧
+                                Log.Instance.Debug($"第{m_uResqPageIndex}页开始", LogTyper.ProLogger);
+
+                                ///设置遇到错误时最大请求次数
+                                int m_uResqCountWhenErr = 3;
+                                int m_uResqCount = 0;
+                                bool m_bResqState = false;
+                                ///兼容一下请求时错误
+                                while (true)
+                                {
+                                    try
+                                    {
+                                        ///记录请求次数
+                                        m_uResqCount++;
+
+                                        ///请求对应页码的数据
+                                        HomeController m_pHome0 = new HomeController();
+                                        m_pHome0.m_pRequest = this.Request;
+                                        JsonResult m_pPageIndexJsonResult = m_pHome0.f_casepool_list(m_uResqPageIndex, m_uPageSize, null, null, null, queryString);
+                                        JObject m_pPageIndexJObject = JObject.FromObject(m_pPageIndexJsonResult.Data);
+
+                                        ///判断页码请求结果
+                                        if (m_pPageIndexJObject["status"].ToString().Equals("0") && m_pPageIndexJObject["data"].Type == JTokenType.Array)
+                                        {
+                                            JArray m_pPageIndexJArray = JArray.FromObject(m_pPageIndexJObject["data"]);
+                                            if (m_pPageIndexJArray != null && ((m_pPageIndexJArray.Count == m_uPageSize && m_uResqPageIndex < m_uResqPages) || (m_pPageIndexJArray.Count == m_uLastPageSize && m_uResqPageIndex == m_uResqPages)))
+                                            {
+                                                ///每页的其它数据使用线程池查询
+                                                ThreadPool.QueueUserWorkItem((o) =>
+                                                {
+                                                    ///放入各页数据
+                                                    foreach (JToken caseJT in m_pPageIndexJArray)
+                                                    {
+                                                        DataRow m_pCaseDR = m_lCaseDT[m_uIndex].NewRow();
+                                                        foreach (DataColumn caseDC in m_pCaseDT.Columns)
+                                                        {
+                                                            m_pCaseDR[caseDC.ColumnName] = caseJT[caseDC.ColumnName];
+                                                        }
+                                                        m_lCaseDT[m_uIndex].Rows.Add(m_pCaseDR);
+
+                                                        #region ***委外案件基本信息
+
+                                                        #endregion
+
+                                                        #region ***委外案件账户信息
+
+                                                        #endregion
+                                                    }
+
+                                                }, null);
+
+                                                m_lStatus[m_uIndex] = true;
+                                                m_lErrMsg[m_uIndex] += $"请求次数:{m_uResqCount};成功";
+                                                m_bResqState = true;
+                                            }
+                                            else
+                                            {
+                                                m_lStatus[m_uIndex] = false;
+                                                string m_sErrMsg = $"请求次数:{m_uResqCount};第{m_uResqPageIndex}页的数据发生变更,应为{(m_uResqPageIndex == m_uResqPages ? m_uLastPageSize : m_uPageSize)}条";
+                                                m_lErrMsg[m_uIndex] += m_sErrMsg;
+                                                Log.Instance.Debug(m_sErrMsg, LogTyper.ProLogger);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            m_lStatus[m_uIndex] = false;
+                                            string m_sErrMsg = $"请求次数:{m_uResqCount};第{m_uResqPageIndex}页的数据非~JTokenType.Array~类型";
+                                            m_lErrMsg[m_uIndex] += m_sErrMsg;
+                                            Log.Instance.Debug(m_sErrMsg, LogTyper.ProLogger);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        m_lStatus[m_uIndex] = false;
+                                        string m_sErrMsg = $"请求次数:{m_uResqCount};第{m_uResqPageIndex}页的数据处理有误:{ex.Message}";
+                                        m_lErrMsg[m_uIndex] += m_sErrMsg;
+                                        Log.Instance.Debug(m_sErrMsg, LogTyper.ProLogger);
+                                        Log.Instance.Debug(ex, LogTyper.ProLogger);
+                                    }
+
+                                    if (m_bResqState || m_uResqCount > m_uResqCountWhenErr) break;
+                                }
+
+                                ///打印下日志吧
+                                Log.Instance.Debug($"第{m_uResqPageIndex}页结束", LogTyper.ProLogger);
+
+                                ///唤醒等待
+                                if (Interlocked.Decrement(ref m_uReset) == 0) m_lManualResetEvent[0].Set();
+
+                            }
+                        }
+
+                        ///等待
+                        WaitHandle.WaitAll(m_lManualResetEvent);
+                        Log.Instance.Debug($"页码共{m_uResqPages},全部完成", LogTyper.ProLogger);
+
+                        DataSet m_pDataSet = new DataSet();
+
+                        DataTable m_pCaseSheet = m_pCaseDT.Clone();
+                        m_pCaseSheet.TableName = "委外案件池信息";
+                        m_pDataSet.Tables.Add(m_pCaseSheet);
+
+                        ///不考虑大数据量的情况,导出缓存
+                        DataTable m_pMsgData = new DataTable();
+                        m_pMsgData.TableName = "委案案件导出详情";
+                        m_pMsgData.Columns.Add("页码", typeof(string));
+                        m_pMsgData.Columns.Add("结果", typeof(string));
+                        m_pDataSet.Tables.Add(m_pMsgData);
+
+                        for (int i = 0; i < m_uResqPages; i++)
+                        {
+                            m_pCaseSheet.Merge(m_lCaseDT[i]);
+
+                            DataRow m_pDataRow = m_pMsgData.NewRow();
+                            m_pDataRow["页码"] = m_lStatus[i];
+                            m_pDataRow["结果"] = m_lErrMsg[i];
+                            m_pMsgData.Rows.Add(m_pDataRow);
+                        }
+
+                        Log.Instance.Debug($"委外案件基本信息:{m_pCaseSheet.Rows.Count}条", LogTyper.ProLogger);
+
+                        ///命名
+                        DateTime m_dtNow = DateTime.Now;
+                        string m_sUUID = Guid.NewGuid().ToString();
+
+                        ///多数据库合并输出
+                        string m_sFilePath = $"~/Output/{m_dtNow.ToString("yyyy/yyyyMM/yyyyMMdd/委外案件池信息_yyyyMMddHHmmssfffffff")}_{m_sUUID}.xlsx";
+
+                        ///结果模式
+                        switch (resultMode)
+                        {
+                            case 1:
+                                data = m_cJSON.m_fDataTableToIList(m_pCaseSheet);
+                                break;
+                            case 2:
+                                m_cExcel.m_fExport(m_sFilePath, m_pDataSet);
+                                break;
+                            case 3:
+                                data = m_cJSON.m_fDataTableToIList(m_pCaseSheet);
+                                m_cExcel.m_fExport(m_sFilePath, m_pDataSet);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        msg = "成功";
+                    }
+                    return rJson();
+                }
+                else msg = m_pJObject["msg"].ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Debug(ex, LogTyper.ProLogger);
+                msg = ex.Message;
+            }
+            return eJson();
+        }
+        #endregion
+
+        #region +++设置Token,设置线程池配置
+        private List<m_cQuery> m_fSetAll(string queryString, ref string Token, ref int resultMode)
+        {
+            List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
+
+            ///工作线程数区间
+            int MinWorkthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "MinWorkthread"));
+            int MaxWorkthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "MaxWorkthread"));
+            int TheWorkthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "TheWorkthread"));
+            int workthread = 0;
+            string m_sWorkthread = m_cQuery.m_fGetQueryString(m_lQueryList, "workthread");
+            if (!string.IsNullOrWhiteSpace(m_sWorkthread) && int.TryParse(m_sWorkthread, out workthread))
+            {
+                if (workthread < MinWorkthread || workthread > MaxWorkthread) throw new ArgumentException($"工作线程数区间[{MinWorkthread},{MaxWorkthread}]");
+                ///I/O线程数区间
+                int MinIOthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "MinIOthread"));
+                int MaxIOthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "MaxIOthread"));
+                int TheIOthread = int.Parse(m_cQuery.m_fGetQueryString(m_lQueryList, "TheIOthread"));
+                int iothread = 0;
+                string m_sIothread = m_cQuery.m_fGetQueryString(m_lQueryList, "iothread");
+                if (!string.IsNullOrWhiteSpace(m_sIothread) && int.TryParse(m_sIothread, out iothread))
+                {
+                    if (iothread < MinIOthread || iothread > MaxIOthread) throw new ArgumentException($"I/O线程数区间[{MinIOthread},{MaxIOthread}]");
+                    if (workthread != MaxWorkthread || iothread != MaxIOthread)
+                    {
+                        ///设置线程数目
+                        bool set = ThreadPool.SetMaxThreads(workthread, iothread);
+                        Log.Instance.Debug($"设置线程池最大线程[{workthread},{iothread}]{(set ? "成功" : "失败")}");
+                    }
+                }
+            }
+
+            ///结果模式
+            string _resultMode = m_cQuery.m_fGetQueryString(m_lQueryList, "resultMode");
+            if (!string.IsNullOrWhiteSpace(_resultMode))
+            {
+                if (!int.TryParse(_resultMode, out resultMode))
+                {
+                    Log.Instance.Debug($"结果模式转换错误,默认Excel模式");
+                }
+            }
+
+            ///可替换值
+            string _Token = m_cQuery.m_fGetQueryString(m_lQueryList, "Token");
+            if (!string.IsNullOrWhiteSpace(_Token)) Token = _Token;
+
+            ///如果Token为空,先查询缓存,无缓存直接走接口即可
+            if (string.IsNullOrWhiteSpace(Token))
+            {
+                JsonResult m_pJsonResult;
+                if (!string.IsNullOrWhiteSpace(m_cCore.m_fReadTxtToToken()))
+                    m_pJsonResult = new HomeController().f_user_sync_token($"{{\"searchMode\":\"1\"}}");
+                else
+                    m_pJsonResult = new HomeController().f_user_sync_token($"{{\"searchMode\":\"2\"}}");
+                JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
+
+                ///判断结果
+                if (m_pJObject["status"].ToString().Equals("0") && m_pJObject["data"].Type == JTokenType.Array)
+                {
+                    Token = m_pJObject["data"][0]["userToken"].ToString();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(Token))
+                throw new Exception("无可用Token");
+
+            Log.Instance.Debug($"Token:{Token}", LogTyper.ProLogger);
+
+            return m_lQueryList;
+        }
+        #endregion
+
+        #region +++默认显示线程池状态
+        private void m_fGetThreadPoolState()
+        {
+            ///返回最大最小线程池
+            string m_sThreadMsg = string.Empty;
+            int workthread;
+            int iothread;
+            ThreadPool.GetMinThreads(out workthread, out iothread);
+            m_sThreadMsg += $"最小工作线程:{workthread};最小I/O线程:{iothread};";
+            ViewBag.MinWorkthread = workthread;
+            ViewBag.MinIOthread = iothread;
+            ThreadPool.GetMaxThreads(out workthread, out iothread);
+            m_sThreadMsg += $"最大工作线程:{workthread};最大I/O线程:{iothread};";
+            ViewBag.MaxWorkthread = workthread;
+            ViewBag.MaxIOthread = iothread;
+            ThreadPool.GetAvailableThreads(out workthread, out iothread);
+            m_sThreadMsg += $"剩余工作线程:{workthread};剩余I/O线程:{iothread};";
+            ViewBag.TheWorkthread = workthread;
+            ViewBag.TheIOthread = iothread;
+            ViewBag.ThreadMsg = m_sThreadMsg;
+        }
+        #endregion
+
+        #region +++定时器激活网站接口
+        public void BT_1REQ(string m_sRefresh)
+        {
+            Log.Instance.Debug($"[ButtBank][HomeController][BT_1REQ][激活]");
+
+            if (!string.IsNullOrWhiteSpace(m_sRefresh))
+            {
+                Log.Instance.Debug($"[ButtBank][HomeController][BT_1REQ][缓存重载,优化中...]");
+            }
+
+            m_fResponse("+OK");
+        }
+        #endregion
+
         #region ***JSON字符串封装返回
         private JsonResult rJson()
         {
@@ -1332,6 +1701,16 @@ namespace ButtzxBank.Controllers
                 retMsg = m_sRetMsg,
                 retTip = retTip
             });
+        }
+        #endregion
+
+        #region ***返回流转格式
+        private void m_fResponse(string m_sResponse)
+        {
+            Response.Charset = m_cConfigConstants.SYSTEM_ENCODING;
+            Response.ContentType = $"application/json;charset={m_cConfigConstants.SYSTEM_ENCODING}";
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding(m_cConfigConstants.SYSTEM_ENCODING);
+            Response.Write(m_sResponse);
         }
         #endregion
 

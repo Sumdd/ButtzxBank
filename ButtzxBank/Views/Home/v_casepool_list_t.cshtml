@@ -26,7 +26,7 @@
     </div>
     <div class="layui-card">
         <div class="layui-card-header">
-            查询条件
+            查询条件<span class="lay-title-span">@(ViewBag.ThreadMsg)</span>
         </div>
         <div class="layui-card-header layuiadmin-card-header-auto" id="defaultSp">
             <form class="layui-form" lay-filter="defaultSearch">
@@ -36,10 +36,66 @@
                         <input type="text" name="rrn" autocomplete="off" class="layui-input" />
                     </div>
                 </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="工作线程数">工作线程数</label>
+                    <div class="layui-input-block">
+                        <input hidden="hidden" name="MinWorkthread" value="@ViewBag.MinWorkthread" />
+                        <input hidden="hidden" name="MaxWorkthread" value="@ViewBag.MaxWorkthread" />
+                        <input hidden="hidden" name="TheWorkthread" value="@ViewBag.TheWorkthread" />
+                        <input type="text" name="workthread" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="I/O线程数">I/O线程数</label>
+                    <div class="layui-input-block">
+                        <input hidden="hidden" name="MinIOthread" value="@ViewBag.MinIOthread" />
+                        <input hidden="hidden" name="MaxIOthread" value="@ViewBag.MaxIOthread" />
+                        <input hidden="hidden" name="TheIOthread" value="@ViewBag.TheIOthread" />
+                        <input type="text" name="iothread" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="Token">Token</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Token" autocomplete="off" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" title="结果模式">结果模式</label>
+                    <div class="layui-input-block">
+                        <select name="resultMode" required lay-verify="required" lay-verType="tips" autocomplete="off">
+                            <option value="1">网页展示</option>
+                            <option value="2" selected="selected">Excel</option>
+                            <option value="3">网页展示并保存至Excel</option>
+                        </select>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="layui-card-body">
             <div class="layui-hide" id="defaultTable" lay-filter="defaultTable"></div>
+        </div>
+        <div class="layui-card-body layui-hide xd">
+            <table class="layui-table" lay-size="sm" style="width:auto">
+                <tr>
+                    <td colspan="2" style="vertical-align:top">
+                        <table class="layui-table" lay-size="sm" style="width:auto">
+                            <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>内容</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2021-02-06</td>
+                                    <td>委外案件案池信息拓展至不分页的模式</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
     <script src="@Url.Content("~/layui/layui.js")"></script>
@@ -54,7 +110,7 @@
                 form = layui.form,
                 table = layui.table;
 
-            core.defaultQuery.url = '@Url.Content("~/Home/f_casepool_list")';
+            core.defaultQuery.url = '@Url.Content("~/Home/f_casepool_list_t")';
 
             table.render({
                 size: 'sm',

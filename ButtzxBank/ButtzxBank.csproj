@@ -247,6 +247,7 @@
     <Compile Include="Core\m_cCSV.cs" />
     <Compile Include="Core\m_cExcel.cs" />
     <Compile Include="Core\m_cHmacAuthUtil.cs" />
+    <Compile Include="Core\m_cJSON.cs" />
     <Compile Include="Core\m_cLog.cs" />
     <Compile Include="Core\m_cModel.cs" />
     <Compile Include="Core\m_cQuartz.cs" />
@@ -482,7 +483,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\WebConfig.pubxml" />
-    <Content Include="Views\Home\v_casepool_list_import.cshtml" />
+    <Content Include="Views\Home\v_casepool_list_t.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
