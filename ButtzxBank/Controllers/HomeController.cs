@@ -231,7 +231,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -1312,6 +1312,7 @@ namespace ButtzxBank.Controllers
         {
             try
             {
+                HttpRequestBase thisRequest = this.Request;
                 ///获取A、B、T各类Token
                 string Token = null;
                 int resultMode = 2;
@@ -1319,12 +1320,19 @@ namespace ButtzxBank.Controllers
 
                 ///以系统最后一条的rrn做开始,一页一条取得总条数,得到需要循环的页,下一页以该查询页的最后一个rrn做开始
                 HomeController m_pHome = new HomeController();
-                m_pHome.m_pRequest = this.Request;
+                m_pHome.m_pRequest = thisRequest;
                 JsonResult m_pJsonResult = m_pHome.f_casepool_list(1, 1, null, null, null, queryString);
                 JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
 
-                ///起始rrn
-                int rrn = 0;
+                #region ***起始rrn
+                int m_uRrn = 0;
+                string rrn = m_cQuery.m_fGetQueryString(m_lQueryList, "rrn");
+                if (string.IsNullOrWhiteSpace(rrn))
+                {
+                    rrn = "1";
+                    if (!int.TryParse(rrn, out m_uRrn)) Log.Instance.Debug($"查询起始RRN NO值有误,默认使用{m_uRrn}", LogTyper.ProLogger);
+                }
+                #endregion
 
                 ///判断结果
                 if (m_pJObject["status"].ToString().Equals("0"))
@@ -1367,6 +1375,23 @@ namespace ButtzxBank.Controllers
                         DataTable[] m_lCaseDT = new DataTable[m_uResqPages];
                         #endregion
 
+                        #region ***委外案件基本信息
+                        DataTable m_pBaseDT = new DataTable();
+                        m_pBaseDT.Columns.Add("caseId", typeof(string));
+                        m_pBaseDT.Columns.Add("lstActionId", typeof(string));
+                        m_pBaseDT.Columns.Add("lstActionName", typeof(string));
+                        m_pBaseDT.Columns.Add("currUserId", typeof(string));
+                        m_pBaseDT.Columns.Add("lstActionTime", typeof(string));
+                        m_pBaseDT.Columns.Add("actToWorkDate", typeof(string));
+                        m_pBaseDT.Columns.Add("actAppointTime", typeof(string));
+                        m_pBaseDT.Columns.Add("balanceAmt", typeof(string));
+                        DataTable[] m_lBaseDT = new DataTable[m_uResqPages];
+                        #endregion
+
+                        #region ***委外案件账户信息
+
+                        #endregion
+
                         bool[] m_lStatus = new bool[m_uResqPages];
                         string[] m_lErrMsg = new string[m_uResqPages];
 
@@ -1383,6 +1408,7 @@ namespace ButtzxBank.Controllers
                             int m_uIndex = i - 1;
 
                             m_lCaseDT[m_uIndex] = m_pCaseDT.Clone();
+                            m_lBaseDT[m_uIndex] = m_pBaseDT.Clone();
 
                             ///此处不能使用线程池取数据,要求为单线程
                             {
@@ -1403,8 +1429,8 @@ namespace ButtzxBank.Controllers
 
                                         ///请求对应页码的数据
                                         HomeController m_pHome0 = new HomeController();
-                                        m_pHome0.m_pRequest = this.Request;
-                                        JsonResult m_pPageIndexJsonResult = m_pHome0.f_casepool_list(m_uResqPageIndex, m_uPageSize, null, null, null, queryString);
+                                        m_pHome0.m_pRequest = thisRequest;
+                                        JsonResult m_pPageIndexJsonResult = m_pHome0.f_casepool_list(m_uResqPageIndex, m_uPageSize, null, null, null, $"{{\"rrn\":\"{m_uRrn}\"}}");
                                         JObject m_pPageIndexJObject = JObject.FromObject(m_pPageIndexJsonResult.Data);
 
                                         ///判断页码请求结果
@@ -1416,9 +1442,11 @@ namespace ButtzxBank.Controllers
                                                 ///每页的其它数据使用线程池查询
                                                 ThreadPool.QueueUserWorkItem((o) =>
                                                 {
-                                                    ///放入各页数据
+                                                    ///放入各页数据,将最后一条数据的rrn取出
                                                     foreach (JToken caseJT in m_pPageIndexJArray)
                                                     {
+                                                        string caseId = caseJT["caseId"].ToString();
+
                                                         DataRow m_pCaseDR = m_lCaseDT[m_uIndex].NewRow();
                                                         foreach (DataColumn caseDC in m_pCaseDT.Columns)
                                                         {
@@ -1427,7 +1455,24 @@ namespace ButtzxBank.Controllers
                                                         m_lCaseDT[m_uIndex].Rows.Add(m_pCaseDR);
 
                                                         #region ***委外案件基本信息
-
+                                                        ///请求对应页码的数据
+                                                        HomeController m_pHome1 = new HomeController();
+                                                        m_pHome1.m_pRequest = thisRequest;
+                                                        JsonResult m_pPageIndexBaseJR = m_pHome1.f_case_info(m_uResqPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"visitFlag\":\"1\"}}");
+                                                        JObject m_pPageIndexBaseJO = JObject.FromObject(m_pPageIndexBaseJR.Data);
+                                                        if (m_pPageIndexBaseJO["status"].ToString().Equals("0") && m_pPageIndexBaseJO["data"].Type == JTokenType.Array)
+                                                        {
+                                                            JArray m_pPageIndexBaseJA = JArray.FromObject(m_pPageIndexBaseJO["data"]);
+                                                            foreach (JToken baseJT in m_pPageIndexBaseJA)
+                                                            {
+                                                                DataRow m_pBaseDR = m_lBaseDT[m_uIndex].NewRow();
+                                                                foreach (DataColumn baseDC in m_pBaseDT.Columns)
+                                                                {
+                                                                    m_pBaseDR[baseDC.ColumnName] = baseJT[baseDC.ColumnName]?.ToString();
+                                                                }
+                                                                m_lBaseDT[m_uIndex].Rows.Add(m_pBaseDR);
+                                                            }
+                                                        }
                                                         #endregion
 
                                                         #region ***委外案件账户信息
@@ -1435,7 +1480,13 @@ namespace ButtzxBank.Controllers
                                                         #endregion
                                                     }
 
+                                                    ///唤醒等待
+                                                    if (Interlocked.Decrement(ref m_uReset) == 0) m_lManualResetEvent[0].Set();
+
                                                 }, null);
+
+                                                ///直接取得,但文档说D类型无此值,如果无值如何处理
+                                                m_uRrn = Convert.ToInt32(m_pPageIndexJArray[m_pPageIndexJArray.Count - 1]["rrn"].ToString());
 
                                                 m_lStatus[m_uIndex] = true;
                                                 m_lErrMsg[m_uIndex] += $"请求次数:{m_uResqCount};成功";
@@ -1471,10 +1522,6 @@ namespace ButtzxBank.Controllers
 
                                 ///打印下日志吧
                                 Log.Instance.Debug($"第{m_uResqPageIndex}页结束", LogTyper.ProLogger);
-
-                                ///唤醒等待
-                                if (Interlocked.Decrement(ref m_uReset) == 0) m_lManualResetEvent[0].Set();
-
                             }
                         }
 
@@ -1487,6 +1534,9 @@ namespace ButtzxBank.Controllers
                         DataTable m_pCaseSheet = m_pCaseDT.Clone();
                         m_pCaseSheet.TableName = "委外案件池信息";
                         m_pDataSet.Tables.Add(m_pCaseSheet);
+                        DataTable m_pBaseSheet = m_pBaseDT.Clone();
+                        m_pBaseSheet.TableName = "委外案件基本信息";
+                        m_pDataSet.Tables.Add(m_pBaseSheet);
 
                         ///不考虑大数据量的情况,导出缓存
                         DataTable m_pMsgData = new DataTable();
@@ -1498,6 +1548,7 @@ namespace ButtzxBank.Controllers
                         for (int i = 0; i < m_uResqPages; i++)
                         {
                             m_pCaseSheet.Merge(m_lCaseDT[i]);
+                            m_pBaseSheet.Merge(m_lBaseDT[i]);
 
                             DataRow m_pDataRow = m_pMsgData.NewRow();
                             m_pDataRow["页码"] = m_lStatus[i];
