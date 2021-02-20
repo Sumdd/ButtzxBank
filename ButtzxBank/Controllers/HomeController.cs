@@ -22,6 +22,10 @@ namespace ButtzxBank.Controllers
         private string msg;
         private int count;
         private object data;
+        /// <summary>
+        /// 续传标识,可能用不到,但这里还是进行兼容
+        /// </summary>
+        private string moreInd = "N";
         private string retCode;
         private string retMsg;
         private string retTip;
@@ -133,7 +137,7 @@ namespace ButtzxBank.Controllers
                             //4、引入报文体
                             bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                             //5、发送处理对应处理请求
-                            Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                            Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                             string m_sToken = resultMap["data"]?.ToString();
 
@@ -189,6 +193,9 @@ namespace ButtzxBank.Controllers
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = m_pData.Count;
                 data = m_pData;
@@ -285,9 +292,12 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -328,7 +338,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -396,7 +406,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 ///有些字段需解密,需在此处解密字段
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -418,6 +428,8 @@ namespace ButtzxBank.Controllers
                     m_pData.Add(m_pDataN);
                 }
 
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -465,7 +477,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 ///有些字段需解密,需在此处解密字段
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -487,6 +499,8 @@ namespace ButtzxBank.Controllers
                     m_pData.Add(m_pDataN);
                 }
 
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -531,9 +545,12 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -581,6 +598,9 @@ namespace ButtzxBank.Controllers
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -628,6 +648,9 @@ namespace ButtzxBank.Controllers
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -683,6 +706,9 @@ namespace ButtzxBank.Controllers
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -738,6 +764,9 @@ namespace ButtzxBank.Controllers
                 Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
+
+                ///Y:有下一页 N:无下一页
+                moreInd = resultMap["moreInd"]?.ToString();
                 msg = resultMap["retMsg"]?.ToString();
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
                 data = m_pData;
@@ -1316,12 +1345,12 @@ namespace ButtzxBank.Controllers
                 ///获取A、B、T各类Token
                 string Token = null;
                 int resultMode = 2;
-                List<m_cQuery> m_lQueryList = this.m_fSetAll(queryString, ref Token, ref resultMode);
+                List<m_cQuery> m_lQueryList = this.m_fSetAll(thisRequest, queryString, ref Token, ref resultMode);
 
                 ///以系统最后一条的rrn做开始,一页一条取得总条数,得到需要循环的页,下一页以该查询页的最后一个rrn做开始
-                HomeController m_pHome = new HomeController();
-                m_pHome.m_pRequest = thisRequest;
-                JsonResult m_pJsonResult = m_pHome.f_casepool_list(1, 1, null, null, null, queryString);
+                HomeController m_pHC = new HomeController();
+                m_pHC.m_pRequest = thisRequest;
+                JsonResult m_pJsonResult = m_pHC.f_casepool_list(1, 1, null, null, null, queryString);
                 JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
 
                 #region ***起始rrn
@@ -1389,7 +1418,132 @@ namespace ButtzxBank.Controllers
                         #endregion
 
                         #region ***委外案件账户信息
+                        DataTable m_pAcctDT = new DataTable();
+                        m_pAcctDT.Columns.Add("acctIdENC", typeof(string));
+                        m_pAcctDT.Columns.Add("acctIdDES", typeof(string));
+                        m_pAcctDT.Columns.Add("acctPdt", typeof(string));
+                        m_pAcctDT.Columns.Add("currency", typeof(string));
+                        m_pAcctDT.Columns.Add("caseId", typeof(string));
+                        m_pAcctDT.Columns.Add("rdCorCustNbr", typeof(string));
+                        m_pAcctDT.Columns.Add("rdCustNbr", typeof(string));
+                        m_pAcctDT.Columns.Add("lastPayMonth", typeof(string));
+                        m_pAcctDT.Columns.Add("entrustStartDate", typeof(string));
+                        m_pAcctDT.Columns.Add("entrustEndDate", typeof(string));
+                        m_pAcctDT.Columns.Add("cardId", typeof(string));
+                        m_pAcctDT.Columns.Add("balanceOpsAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("principalOpsAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("accAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("overPeriod", typeof(string));
+                        m_pAcctDT.Columns.Add("outsourceTimes", typeof(string));
+                        DataTable[] m_lAcctDT = new DataTable[m_uResqPages];
+                        #endregion
 
+                        #region ***委外案件客户信息
+                        DataTable m_pCustDT = new DataTable();
+                        m_pCustDT.Columns.Add("caseId", typeof(string));
+                        m_pCustDT.Columns.Add("currUserId", typeof(string));
+                        m_pCustDT.Columns.Add("custName", typeof(string));
+                        m_pCustDT.Columns.Add("custename", typeof(string));
+                        m_pCustDT.Columns.Add("cidType", typeof(string));
+                        m_pCustDT.Columns.Add("cidDES", typeof(string));
+                        m_pCustDT.Columns.Add("gender", typeof(string));
+                        m_pCustDT.Columns.Add("nation", typeof(string));
+                        m_pCustDT.Columns.Add("custmprov", typeof(string));
+                        m_pCustDT.Columns.Add("custmcity", typeof(string));
+                        m_pCustDT.Columns.Add("married", typeof(string));
+                        m_pCustDT.Columns.Add("companyName", typeof(string));
+                        m_pCustDT.Columns.Add("position", typeof(string));
+                        m_pCustDT.Columns.Add("workId", typeof(string));
+                        m_pCustDT.Columns.Add("mail", typeof(string));
+                        m_pCustDT.Columns.Add("cellphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("cellphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custmaddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("custmzip", typeof(string));
+                        m_pCustDT.Columns.Add("custphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("custphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custaddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("custcity", typeof(string));
+                        m_pCustDT.Columns.Add("custprov", typeof(string));
+                        m_pCustDT.Columns.Add("custzip", typeof(string));
+                        m_pCustDT.Columns.Add("custemptelDES", typeof(string));
+                        m_pCustDT.Columns.Add("custemptelRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custempaDES", typeof(string));
+                        m_pCustDT.Columns.Add("custempaz", typeof(string));
+                        m_pCustDT.Columns.Add("custempctc", typeof(string));
+                        m_pCustDT.Columns.Add("custglnam", typeof(string));
+                        m_pCustDT.Columns.Add("custglrln", typeof(string));
+                        m_pCustDT.Columns.Add("custgsex", typeof(string));
+                        m_pCustDT.Columns.Add("custgemp", typeof(string));
+                        m_pCustDT.Columns.Add("custgwrkidDES", typeof(string));
+                        m_pCustDT.Columns.Add("custgwrkidRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custgphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("custgphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custgemptlDES", typeof(string));
+                        m_pCustDT.Columns.Add("custgemptlRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custgoccDES", typeof(string));
+                        m_pCustDT.Columns.Add("custgoccRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custgempaDES", typeof(string));
+                        m_pCustDT.Columns.Add("custgcity", typeof(string));
+                        m_pCustDT.Columns.Add("custgprov", typeof(string));
+                        m_pCustDT.Columns.Add("custgempaz", typeof(string));
+                        m_pCustDT.Columns.Add("custrfname", typeof(string));
+                        m_pCustDT.Columns.Add("custrfrln", typeof(string));
+                        m_pCustDT.Columns.Add("custrfmblpDES", typeof(string));
+                        m_pCustDT.Columns.Add("custrfmblpRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custrfphnoDES", typeof(string));
+                        m_pCustDT.Columns.Add("custrfphnoRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custrfofpnDES", typeof(string));
+                        m_pCustDT.Columns.Add("custrfofpnRSA", typeof(string));
+                        m_pCustDT.Columns.Add("custcname", typeof(string));
+                        m_pCustDT.Columns.Add("policeregAddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("serveAddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("policestaAddrDES", typeof(string));
+                        DataTable[] m_lCustDT = new DataTable[m_uResqPages];
+                        #endregion
+
+                        #region ***委外案件客户邮寄积分信息
+                        DataTable m_pAddiDT = new DataTable();
+                        m_pAddiDT.Columns.Add("caseId", typeof(string));
+                        m_pAddiDT.Columns.Add("addressId", typeof(string));
+                        m_pAddiDT.Columns.Add("mailName", typeof(string));
+                        m_pAddiDT.Columns.Add("mailAddressDES", typeof(string));
+                        m_pAddiDT.Columns.Add("mailPhoneDES", typeof(string));
+                        m_pAddiDT.Columns.Add("mailPhoneRSA", typeof(string));
+                        m_pAddiDT.Columns.Add("mailHomePhoneDES", typeof(string));
+                        m_pAddiDT.Columns.Add("mailHomePhoneRSA", typeof(string));
+                        m_pAddiDT.Columns.Add("csgName", typeof(string));
+                        m_pAddiDT.Columns.Add("csgAddressDES", typeof(string));
+                        m_pAddiDT.Columns.Add("csgPhone1DES", typeof(string));
+                        m_pAddiDT.Columns.Add("csgPhone1RSA", typeof(string));
+                        m_pAddiDT.Columns.Add("csgPhone2DES", typeof(string));
+                        m_pAddiDT.Columns.Add("csgPhone2RSA", typeof(string));
+                        DataTable[] m_lAddiDT = new DataTable[m_uResqPages];
+                        #endregion
+
+                        #region ***委外案件客户联系方式
+                        DataTable m_pCntaDT = new DataTable();
+                        m_pCntaDT.Columns.Add("caseId", typeof(string));
+                        m_pCntaDT.Columns.Add("phoneId", typeof(string));
+                        m_pCntaDT.Columns.Add("phoneType", typeof(string));
+                        m_pCntaDT.Columns.Add("relation", typeof(string));
+                        m_pCntaDT.Columns.Add("name", typeof(string));
+                        m_pCntaDT.Columns.Add("phoneDES", typeof(string));
+                        m_pCntaDT.Columns.Add("phoneRSA", typeof(string));
+                        m_pCntaDT.Columns.Add("status", typeof(string));
+                        m_pCntaDT.Columns.Add("origin", typeof(string));
+                        DataTable[] m_lCntaDT = new DataTable[m_uResqPages];
+                        #endregion
+
+                        #region ***委外案件客户联系地址
+                        DataTable m_pAddrDT = new DataTable();
+                        m_pAddrDT.Columns.Add("caseId", typeof(string));
+                        m_pAddrDT.Columns.Add("addressId", typeof(string));
+                        m_pAddrDT.Columns.Add("name", typeof(string));
+                        m_pAddrDT.Columns.Add("relation", typeof(string));
+                        m_pAddrDT.Columns.Add("addressType", typeof(string));
+                        m_pAddrDT.Columns.Add("addressDES", typeof(string));
+                        m_pAddrDT.Columns.Add("origin", typeof(string));
+                        DataTable[] m_lAddrDT = new DataTable[m_uResqPages];
                         #endregion
 
                         bool[] m_lStatus = new bool[m_uResqPages];
@@ -1409,6 +1563,11 @@ namespace ButtzxBank.Controllers
 
                             m_lCaseDT[m_uIndex] = m_pCaseDT.Clone();
                             m_lBaseDT[m_uIndex] = m_pBaseDT.Clone();
+                            m_lAcctDT[m_uIndex] = m_pAcctDT.Clone();
+                            m_lCustDT[m_uIndex] = m_pCustDT.Clone();
+                            m_lAddiDT[m_uIndex] = m_pAddiDT.Clone();
+                            m_lCntaDT[m_uIndex] = m_pCntaDT.Clone();
+                            m_lAddrDT[m_uIndex] = m_pAddrDT.Clone();
 
                             ///此处不能使用线程池取数据,要求为单线程
                             {
@@ -1445,6 +1604,7 @@ namespace ButtzxBank.Controllers
                                                     ///放入各页数据,将最后一条数据的rrn取出
                                                     foreach (JToken caseJT in m_pPageIndexJArray)
                                                     {
+                                                        ///案件号
                                                         string caseId = caseJT["caseId"].ToString();
 
                                                         DataRow m_pCaseDR = m_lCaseDT[m_uIndex].NewRow();
@@ -1455,28 +1615,338 @@ namespace ButtzxBank.Controllers
                                                         m_lCaseDT[m_uIndex].Rows.Add(m_pCaseDR);
 
                                                         #region ***委外案件基本信息
-                                                        ///请求对应页码的数据
-                                                        HomeController m_pHome1 = new HomeController();
-                                                        m_pHome1.m_pRequest = thisRequest;
-                                                        JsonResult m_pPageIndexBaseJR = m_pHome1.f_case_info(m_uResqPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"visitFlag\":\"1\"}}");
-                                                        JObject m_pPageIndexBaseJO = JObject.FromObject(m_pPageIndexBaseJR.Data);
-                                                        if (m_pPageIndexBaseJO["status"].ToString().Equals("0") && m_pPageIndexBaseJO["data"].Type == JTokenType.Array)
                                                         {
-                                                            JArray m_pPageIndexBaseJA = JArray.FromObject(m_pPageIndexBaseJO["data"]);
-                                                            foreach (JToken baseJT in m_pPageIndexBaseJA)
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
+
+                                                            while (true)
                                                             {
-                                                                DataRow m_pBaseDR = m_lBaseDT[m_uIndex].NewRow();
-                                                                foreach (DataColumn baseDC in m_pBaseDT.Columns)
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_case_info(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"visitFlag\":\"1\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
-                                                                    m_pBaseDR[baseDC.ColumnName] = baseJT[baseDC.ColumnName]?.ToString();
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lBaseDT[m_uIndex].NewRow();
+                                                                        m_pDR["caseId"] = caseId;
+                                                                        foreach (DataColumn dC in m_pBaseDT.Columns)
+                                                                        {
+                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lBaseDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
                                                                 }
-                                                                m_lBaseDT[m_uIndex].Rows.Add(m_pBaseDR);
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件基本信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
                                                             }
                                                         }
                                                         #endregion
 
                                                         #region ***委外案件账户信息
+                                                        {
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
 
+                                                            while (true)
+                                                            {
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_acct_list(1, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
+                                                                {
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lAcctDT[m_uIndex].NewRow();
+                                                                        foreach (DataColumn dC in m_pAcctDT.Columns)
+                                                                        {
+                                                                            m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lAcctDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件账户信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
+                                                            }
+                                                        }
+                                                        #endregion
+
+                                                        #region ***委外案件客户信息
+                                                        {
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
+
+                                                            while (true)
+                                                            {
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
+                                                                {
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lCustDT[m_uIndex].NewRow();
+                                                                        m_pDR["caseId"] = caseId;
+                                                                        foreach (DataColumn dC in m_pCustDT.Columns)
+                                                                        {
+                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lCustDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件客户信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
+                                                            }
+                                                        }
+                                                        #endregion
+
+                                                        #region ***委外案件客户邮寄积分信息
+                                                        {
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
+
+                                                            while (true)
+                                                            {
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_addition(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
+                                                                {
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lAddiDT[m_uIndex].NewRow();
+                                                                        m_pDR["caseId"] = caseId;
+                                                                        foreach (DataColumn dC in m_pAddiDT.Columns)
+                                                                        {
+                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lAddiDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件客户邮寄积分信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
+                                                            }
+                                                        }
+                                                        #endregion
+
+                                                        #region ***委外案件客户联系方式
+                                                        {
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
+
+                                                            while (true)
+                                                            {
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_phone_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
+                                                                {
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lCntaDT[m_uIndex].NewRow();
+                                                                        m_pDR["caseId"] = caseId;
+                                                                        foreach (DataColumn dC in m_pCntaDT.Columns)
+                                                                        {
+                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lCntaDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件客户联系方式错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
+                                                            }
+                                                        }
+                                                        #endregion
+
+                                                        #region ***委外案件客户联系地址
+                                                        {
+                                                            #region ***局部变量
+                                                            int _m_uResqCountWhenErr = 3;
+                                                            int _m_uResqCount = 0;
+                                                            bool _m_bResqState = false;
+                                                            int _m_uPageIndex = 1;
+                                                            bool _m_uMoreInd = false;
+                                                            #endregion
+
+                                                            while (true)
+                                                            {
+                                                                ///请求对应页码的数据
+                                                                HomeController m_pHome = new HomeController();
+                                                                m_pHome.m_pRequest = thisRequest;
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_address_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JObject m_pJO = JObject.FromObject(m_pJR.Data);
+                                                                if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
+                                                                {
+                                                                    JArray m_pJA = JArray.FromObject(m_pJO["data"]);
+                                                                    foreach (JToken jT in m_pJA)
+                                                                    {
+                                                                        DataRow m_pDR = m_lAddrDT[m_uIndex].NewRow();
+                                                                        m_pDR["caseId"] = caseId;
+                                                                        foreach (DataColumn dC in m_pAddrDT.Columns)
+                                                                        {
+                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                        }
+                                                                        m_lAddrDT[m_uIndex].Rows.Add(m_pDR);
+                                                                    }
+
+                                                                    _m_uMoreInd = m_pJO["moreInd"]?.ToString() == "Y";
+
+                                                                    _m_bResqState = true;
+                                                                    _m_uResqCount = 0;
+
+                                                                    ///继续下一页
+                                                                    if (_m_uMoreInd)
+                                                                    {
+                                                                        _m_uPageIndex++;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.Instance.Debug($"委外案件客户联系地址错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    _m_bResqState = false;
+                                                                    _m_uResqCount++;
+                                                                }
+
+                                                                ///如果请求状态成功或者请求次数超过最大错误次数,退出
+                                                                if (_m_bResqState || _m_uResqCount > _m_uResqCountWhenErr) break;
+                                                            }
+                                                        }
                                                         #endregion
                                                     }
 
@@ -1537,6 +2007,21 @@ namespace ButtzxBank.Controllers
                         DataTable m_pBaseSheet = m_pBaseDT.Clone();
                         m_pBaseSheet.TableName = "委外案件基本信息";
                         m_pDataSet.Tables.Add(m_pBaseSheet);
+                        DataTable m_pAcctSheet = m_pAcctDT.Clone();
+                        m_pAcctSheet.TableName = "委外案件账户信息";
+                        m_pDataSet.Tables.Add(m_pAcctSheet);
+                        DataTable m_pCustSheet = m_pCustDT.Clone();
+                        m_pCustSheet.TableName = "委外案件客户信息";
+                        m_pDataSet.Tables.Add(m_pCustSheet);
+                        DataTable m_pAddiSheet = m_pAddiDT.Clone();
+                        m_pAddiSheet.TableName = "委外案件客户邮寄积分信息";
+                        m_pDataSet.Tables.Add(m_pAddiSheet);
+                        DataTable m_pCntaSheet = m_pCntaDT.Clone();
+                        m_pCntaSheet.TableName = "委外案件客户联系方式";
+                        m_pDataSet.Tables.Add(m_pCntaSheet);
+                        DataTable m_pAddrSheet = m_pAddrDT.Clone();
+                        m_pAddrSheet.TableName = "委外案件客户联系地址";
+                        m_pDataSet.Tables.Add(m_pAddrSheet);
 
                         ///不考虑大数据量的情况,导出缓存
                         DataTable m_pMsgData = new DataTable();
@@ -1549,6 +2034,11 @@ namespace ButtzxBank.Controllers
                         {
                             m_pCaseSheet.Merge(m_lCaseDT[i]);
                             m_pBaseSheet.Merge(m_lBaseDT[i]);
+                            m_pAcctSheet.Merge(m_lAcctDT[i]);
+                            m_pCustSheet.Merge(m_lCustDT[i]);
+                            m_pAddiSheet.Merge(m_lAddiDT[i]);
+                            m_pCntaSheet.Merge(m_lCntaDT[i]);
+                            m_pAddrSheet.Merge(m_lAddrDT[i]);
 
                             DataRow m_pDataRow = m_pMsgData.NewRow();
                             m_pDataRow["页码"] = m_lStatus[i];
@@ -1556,14 +2046,14 @@ namespace ButtzxBank.Controllers
                             m_pMsgData.Rows.Add(m_pDataRow);
                         }
 
-                        Log.Instance.Debug($"委外案件基本信息:{m_pCaseSheet.Rows.Count}条", LogTyper.ProLogger);
+                        Log.Instance.Debug($"委外案件池信息:{m_pCaseSheet.Rows.Count}条", LogTyper.ProLogger);
 
                         ///命名
                         DateTime m_dtNow = DateTime.Now;
                         string m_sUUID = Guid.NewGuid().ToString();
 
                         ///多数据库合并输出
-                        string m_sFilePath = $"~/Output/{m_dtNow.ToString("yyyy/yyyyMM/yyyyMMdd/委外案件池信息_yyyyMMddHHmmssfffffff")}_{m_sUUID}.xlsx";
+                        string m_sFilePath = $"~/Output/{m_dtNow.ToString("yyyy/yyyyMM/yyyyMMdd/委外案件信息_yyyyMMddHHmmssfffffff")}_{m_sUUID}.xlsx";
 
                         ///结果模式
                         switch (resultMode)
@@ -1598,7 +2088,7 @@ namespace ButtzxBank.Controllers
         #endregion
 
         #region +++设置Token,设置线程池配置
-        private List<m_cQuery> m_fSetAll(string queryString, ref string Token, ref int resultMode)
+        private List<m_cQuery> m_fSetAll(HttpRequestBase thisRequest, string queryString, ref string Token, ref int resultMode)
         {
             List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
 
@@ -1646,11 +2136,13 @@ namespace ButtzxBank.Controllers
             ///如果Token为空,先查询缓存,无缓存直接走接口即可
             if (string.IsNullOrWhiteSpace(Token))
             {
+                HomeController m_pHome = new HomeController();
+                m_pHome.m_pRequest = thisRequest;
                 JsonResult m_pJsonResult;
                 if (!string.IsNullOrWhiteSpace(m_cCore.m_fReadTxtToToken()))
-                    m_pJsonResult = new HomeController().f_user_sync_token($"{{\"searchMode\":\"1\"}}");
+                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"1\"}}");
                 else
-                    m_pJsonResult = new HomeController().f_user_sync_token($"{{\"searchMode\":\"2\"}}");
+                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"2\"}}");
                 JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
 
                 ///判断结果
@@ -1715,6 +2207,7 @@ namespace ButtzxBank.Controllers
                 msg = msg,
                 count = count,
                 data = data,
+                moreInd = moreInd,
                 retCode = retCode,
                 retMsg = retMsg,
                 retTip = retTip
