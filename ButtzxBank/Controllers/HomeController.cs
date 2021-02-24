@@ -810,9 +810,13 @@ namespace ButtzxBank.Controllers
                 string appointDate = m_cQuery.m_fGetQueryString(m_lQueryList, "appointDate");
                 if (!string.IsNullOrWhiteSpace(appointDate)) appointDate = appointDate.Replace("-", "").Replace(" ", "");
                 encryptInfo.Add("appointDate", appointDate);
-                ///约会日期
+                ///约会时间
                 string appointTime = m_cQuery.m_fGetQueryString(m_lQueryList, "appointTime");
-                if (!string.IsNullOrWhiteSpace(appointTime)) appointTime = appointTime.Replace(":", "");
+                if (!string.IsNullOrWhiteSpace(appointTime))
+                {
+                    appointTime = appointTime.Replace(":", "");
+                    if (appointTime.Length > 4) appointTime = appointTime.Substring(0, 4);
+                }
                 encryptInfo.Add("appointTime", appointTime);
                 ///行动代码
                 encryptInfo.Add("actionCode", m_cQuery.m_fGetQueryString(m_lQueryList, "actionCode"));
@@ -1376,173 +1380,188 @@ namespace ButtzxBank.Controllers
                     {
                         #region ***委外案件池信息
                         DataTable m_pCaseDT = new DataTable();
-                        m_pCaseDT.Columns.Add("flag", typeof(string));
-                        m_pCaseDT.Columns.Add("caseId", typeof(string));
-                        m_pCaseDT.Columns.Add("rrn", typeof(string));
-                        m_pCaseDT.Columns.Add("agentId", typeof(string));
-                        m_pCaseDT.Columns.Add("branchId", typeof(string));
-                        m_pCaseDT.Columns.Add("adjustAreaCode", typeof(string));
-                        m_pCaseDT.Columns.Add("afterAreaCode", typeof(string));
-                        m_pCaseDT.Columns.Add("batchNum", typeof(string));
-                        m_pCaseDT.Columns.Add("custName", typeof(string));
-                        m_pCaseDT.Columns.Add("cidDES", typeof(string));
-                        m_pCaseDT.Columns.Add("age", typeof(string));
-                        m_pCaseDT.Columns.Add("acctIdDES", typeof(string));
-                        m_pCaseDT.Columns.Add("acctIdENC", typeof(string));
-                        m_pCaseDT.Columns.Add("currency", typeof(string));
-                        m_pCaseDT.Columns.Add("gender", typeof(string));
-                        m_pCaseDT.Columns.Add("principalOpsAmt", typeof(string));
-                        m_pCaseDT.Columns.Add("balanceOpsAmt", typeof(string));
-                        m_pCaseDT.Columns.Add("lastBalanceOpsAmt", typeof(string));
-                        m_pCaseDT.Columns.Add("monthBalanceAmt", typeof(string));
-                        m_pCaseDT.Columns.Add("overPeriod", typeof(string));
-                        m_pCaseDT.Columns.Add("targetPeriod", typeof(string));
-                        m_pCaseDT.Columns.Add("caseType", typeof(string));
-                        m_pCaseDT.Columns.Add("entrustStartDate", typeof(string));
-                        m_pCaseDT.Columns.Add("entrustEndDate", typeof(string));
-                        m_pCaseDT.Columns.Add("isSued", typeof(string));
+                        m_pCaseDT.Columns.Add("case_flag", typeof(string));
+                        m_pCaseDT.Columns.Add("case_caseId", typeof(string));
+                        m_pCaseDT.Columns.Add("case_rrn", typeof(string));
+                        m_pCaseDT.Columns.Add("case_agentId", typeof(string));
+                        m_pCaseDT.Columns.Add("case_branchId", typeof(string));
+                        m_pCaseDT.Columns.Add("case_adjustAreaCode", typeof(string));
+                        m_pCaseDT.Columns.Add("case_afterAreaCode", typeof(string));
+                        m_pCaseDT.Columns.Add("case_batchNum", typeof(string));
+                        m_pCaseDT.Columns.Add("case_custName", typeof(string));
+                        m_pCaseDT.Columns.Add("case_cidDES", typeof(string));
+                        m_pCaseDT.Columns.Add("case_age", typeof(string));
+                        m_pCaseDT.Columns.Add("case_acctIdDES", typeof(string));
+                        m_pCaseDT.Columns.Add("case_acctIdENC", typeof(string));
+                        m_pCaseDT.Columns.Add("case_currency", typeof(string));
+                        m_pCaseDT.Columns.Add("case_gender", typeof(string));
+                        m_pCaseDT.Columns.Add("case_principalOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("case_balanceOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("case_lastBalanceOpsAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("case_monthBalanceAmt", typeof(string));
+                        m_pCaseDT.Columns.Add("case_overPeriod", typeof(string));
+                        m_pCaseDT.Columns.Add("case_targetPeriod", typeof(string));
+                        m_pCaseDT.Columns.Add("case_caseType", typeof(string));
+                        m_pCaseDT.Columns.Add("case_entrustStartDate", typeof(string));
+                        m_pCaseDT.Columns.Add("case_entrustEndDate", typeof(string));
+                        m_pCaseDT.Columns.Add("case_isSued", typeof(string));
                         DataTable[] m_lCaseDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件基本信息
                         DataTable m_pBaseDT = new DataTable();
-                        m_pBaseDT.Columns.Add("caseId", typeof(string));
-                        m_pBaseDT.Columns.Add("lstActionId", typeof(string));
-                        m_pBaseDT.Columns.Add("lstActionName", typeof(string));
-                        m_pBaseDT.Columns.Add("currUserId", typeof(string));
-                        m_pBaseDT.Columns.Add("lstActionTime", typeof(string));
-                        m_pBaseDT.Columns.Add("actToWorkDate", typeof(string));
-                        m_pBaseDT.Columns.Add("actAppointTime", typeof(string));
-                        m_pBaseDT.Columns.Add("balanceAmt", typeof(string));
+                        m_pBaseDT.Columns.Add("base_caseId", typeof(string));
+                        m_pBaseDT.Columns.Add("base_lstActionId", typeof(string));
+                        m_pBaseDT.Columns.Add("base_lstActionName", typeof(string));
+                        m_pBaseDT.Columns.Add("base_currUserId", typeof(string));
+                        m_pBaseDT.Columns.Add("base_lstActionTime", typeof(string));
+                        m_pBaseDT.Columns.Add("base_actToWorkDate", typeof(string));
+                        m_pBaseDT.Columns.Add("base_actAppointTime", typeof(string));
+                        m_pBaseDT.Columns.Add("base_balanceAmt", typeof(string));
                         DataTable[] m_lBaseDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件账户信息
                         DataTable m_pAcctDT = new DataTable();
-                        m_pAcctDT.Columns.Add("acctIdENC", typeof(string));
-                        m_pAcctDT.Columns.Add("acctIdDES", typeof(string));
-                        m_pAcctDT.Columns.Add("acctPdt", typeof(string));
-                        m_pAcctDT.Columns.Add("currency", typeof(string));
-                        m_pAcctDT.Columns.Add("caseId", typeof(string));
-                        m_pAcctDT.Columns.Add("rdCorCustNbr", typeof(string));
-                        m_pAcctDT.Columns.Add("rdCustNbr", typeof(string));
-                        m_pAcctDT.Columns.Add("lastPayMonth", typeof(string));
-                        m_pAcctDT.Columns.Add("entrustStartDate", typeof(string));
-                        m_pAcctDT.Columns.Add("entrustEndDate", typeof(string));
-                        m_pAcctDT.Columns.Add("cardId", typeof(string));
-                        m_pAcctDT.Columns.Add("balanceOpsAmt", typeof(string));
-                        m_pAcctDT.Columns.Add("principalOpsAmt", typeof(string));
-                        m_pAcctDT.Columns.Add("accAmt", typeof(string));
-                        m_pAcctDT.Columns.Add("overPeriod", typeof(string));
-                        m_pAcctDT.Columns.Add("outsourceTimes", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_acctIdENC", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_acctIdDES", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_acctPdt", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_currency", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_caseId", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_rdCorCustNbr", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_rdCustNbr", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_lastPayMonth", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_entrustStartDate", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_entrustEndDate", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_cardId", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_balanceOpsAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_principalOpsAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_accAmt", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_overPeriod", typeof(string));
+                        m_pAcctDT.Columns.Add("acct_outsourceTimes", typeof(string));
                         DataTable[] m_lAcctDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件客户信息
                         DataTable m_pCustDT = new DataTable();
-                        m_pCustDT.Columns.Add("caseId", typeof(string));
-                        m_pCustDT.Columns.Add("currUserId", typeof(string));
-                        m_pCustDT.Columns.Add("custName", typeof(string));
-                        m_pCustDT.Columns.Add("custename", typeof(string));
-                        m_pCustDT.Columns.Add("cidType", typeof(string));
-                        m_pCustDT.Columns.Add("cidDES", typeof(string));
-                        m_pCustDT.Columns.Add("gender", typeof(string));
-                        m_pCustDT.Columns.Add("nation", typeof(string));
-                        m_pCustDT.Columns.Add("custmprov", typeof(string));
-                        m_pCustDT.Columns.Add("custmcity", typeof(string));
-                        m_pCustDT.Columns.Add("married", typeof(string));
-                        m_pCustDT.Columns.Add("companyName", typeof(string));
-                        m_pCustDT.Columns.Add("position", typeof(string));
-                        m_pCustDT.Columns.Add("workId", typeof(string));
-                        m_pCustDT.Columns.Add("mail", typeof(string));
-                        m_pCustDT.Columns.Add("cellphoneDES", typeof(string));
-                        m_pCustDT.Columns.Add("cellphoneRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custmaddrDES", typeof(string));
-                        m_pCustDT.Columns.Add("custmzip", typeof(string));
-                        m_pCustDT.Columns.Add("custphoneDES", typeof(string));
-                        m_pCustDT.Columns.Add("custphoneRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custaddrDES", typeof(string));
-                        m_pCustDT.Columns.Add("custcity", typeof(string));
-                        m_pCustDT.Columns.Add("custprov", typeof(string));
-                        m_pCustDT.Columns.Add("custzip", typeof(string));
-                        m_pCustDT.Columns.Add("custemptelDES", typeof(string));
-                        m_pCustDT.Columns.Add("custemptelRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custempaDES", typeof(string));
-                        m_pCustDT.Columns.Add("custempaz", typeof(string));
-                        m_pCustDT.Columns.Add("custempctc", typeof(string));
-                        m_pCustDT.Columns.Add("custglnam", typeof(string));
-                        m_pCustDT.Columns.Add("custglrln", typeof(string));
-                        m_pCustDT.Columns.Add("custgsex", typeof(string));
-                        m_pCustDT.Columns.Add("custgemp", typeof(string));
-                        m_pCustDT.Columns.Add("custgwrkidDES", typeof(string));
-                        m_pCustDT.Columns.Add("custgwrkidRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custgphoneDES", typeof(string));
-                        m_pCustDT.Columns.Add("custgphoneRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custgemptlDES", typeof(string));
-                        m_pCustDT.Columns.Add("custgemptlRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custgoccDES", typeof(string));
-                        m_pCustDT.Columns.Add("custgoccRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custgempaDES", typeof(string));
-                        m_pCustDT.Columns.Add("custgcity", typeof(string));
-                        m_pCustDT.Columns.Add("custgprov", typeof(string));
-                        m_pCustDT.Columns.Add("custgempaz", typeof(string));
-                        m_pCustDT.Columns.Add("custrfname", typeof(string));
-                        m_pCustDT.Columns.Add("custrfrln", typeof(string));
-                        m_pCustDT.Columns.Add("custrfmblpDES", typeof(string));
-                        m_pCustDT.Columns.Add("custrfmblpRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custrfphnoDES", typeof(string));
-                        m_pCustDT.Columns.Add("custrfphnoRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custrfofpnDES", typeof(string));
-                        m_pCustDT.Columns.Add("custrfofpnRSA", typeof(string));
-                        m_pCustDT.Columns.Add("custcname", typeof(string));
-                        m_pCustDT.Columns.Add("policeregAddrDES", typeof(string));
-                        m_pCustDT.Columns.Add("serveAddrDES", typeof(string));
-                        m_pCustDT.Columns.Add("policestaAddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_caseId", typeof(string));
+                        m_pCustDT.Columns.Add("cust_currUserId", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custName", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custename", typeof(string));
+                        m_pCustDT.Columns.Add("cust_cidType", typeof(string));
+                        m_pCustDT.Columns.Add("cust_cidDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_gender", typeof(string));
+                        m_pCustDT.Columns.Add("cust_nation", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custmprov", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custmcity", typeof(string));
+                        m_pCustDT.Columns.Add("cust_married", typeof(string));
+                        m_pCustDT.Columns.Add("cust_companyName", typeof(string));
+                        m_pCustDT.Columns.Add("cust_position", typeof(string));
+                        m_pCustDT.Columns.Add("cust_workId", typeof(string));
+                        m_pCustDT.Columns.Add("cust_mail", typeof(string));
+                        m_pCustDT.Columns.Add("cust_cellphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_cellphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_cellphoneRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custmaddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custmzip", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custphoneRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custaddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custcity", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custprov", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custzip", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custemptelDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custemptelRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custemptelRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custempaDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custempaz", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custempctc", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custglnam", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custglrln", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgsex", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgemp", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgwrkidDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgwrkidRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgwrkidRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgphoneDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgphoneRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgphoneRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgemptlDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgemptlRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgemptlRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgoccDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgoccRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgoccRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgempaDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgcity", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgprov", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custgempaz", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfname", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfrln", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfmblpDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfmblpRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfmblpRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfphnoDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfphnoRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfphnoRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfofpnDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfofpnRSA", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custrfofpnRSAD", typeof(string));
+                        m_pCustDT.Columns.Add("cust_custcname", typeof(string));
+                        m_pCustDT.Columns.Add("cust_policeregAddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_serveAddrDES", typeof(string));
+                        m_pCustDT.Columns.Add("cust_policestaAddrDES", typeof(string));
                         DataTable[] m_lCustDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件客户邮寄积分信息
                         DataTable m_pAddiDT = new DataTable();
-                        m_pAddiDT.Columns.Add("caseId", typeof(string));
-                        m_pAddiDT.Columns.Add("addressId", typeof(string));
-                        m_pAddiDT.Columns.Add("mailName", typeof(string));
-                        m_pAddiDT.Columns.Add("mailAddressDES", typeof(string));
-                        m_pAddiDT.Columns.Add("mailPhoneDES", typeof(string));
-                        m_pAddiDT.Columns.Add("mailPhoneRSA", typeof(string));
-                        m_pAddiDT.Columns.Add("mailHomePhoneDES", typeof(string));
-                        m_pAddiDT.Columns.Add("mailHomePhoneRSA", typeof(string));
-                        m_pAddiDT.Columns.Add("csgName", typeof(string));
-                        m_pAddiDT.Columns.Add("csgAddressDES", typeof(string));
-                        m_pAddiDT.Columns.Add("csgPhone1DES", typeof(string));
-                        m_pAddiDT.Columns.Add("csgPhone1RSA", typeof(string));
-                        m_pAddiDT.Columns.Add("csgPhone2DES", typeof(string));
-                        m_pAddiDT.Columns.Add("csgPhone2RSA", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_caseId", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_addressId", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailName", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailAddressDES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailPhoneDES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailPhoneRSA", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailPhoneRSAD", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailHomePhoneDES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailHomePhoneRSA", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_mailHomePhoneRSAD", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgName", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgAddressDES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone1DES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone1RSA", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone1RSAD", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone2DES", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone2RSA", typeof(string));
+                        m_pAddiDT.Columns.Add("addi_csgPhone2RSAD", typeof(string));
                         DataTable[] m_lAddiDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件客户联系方式
                         DataTable m_pCntaDT = new DataTable();
-                        m_pCntaDT.Columns.Add("caseId", typeof(string));
-                        m_pCntaDT.Columns.Add("phoneId", typeof(string));
-                        m_pCntaDT.Columns.Add("phoneType", typeof(string));
-                        m_pCntaDT.Columns.Add("relation", typeof(string));
-                        m_pCntaDT.Columns.Add("name", typeof(string));
-                        m_pCntaDT.Columns.Add("phoneDES", typeof(string));
-                        m_pCntaDT.Columns.Add("phoneRSA", typeof(string));
-                        m_pCntaDT.Columns.Add("status", typeof(string));
-                        m_pCntaDT.Columns.Add("origin", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_caseId", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_phoneId", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_phoneType", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_relation", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_name", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_phoneDES", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_phoneRSA", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_phoneRSAD", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_status", typeof(string));
+                        m_pCntaDT.Columns.Add("cnta_origin", typeof(string));
                         DataTable[] m_lCntaDT = new DataTable[m_uResqPages];
                         #endregion
 
                         #region ***委外案件客户联系地址
                         DataTable m_pAddrDT = new DataTable();
-                        m_pAddrDT.Columns.Add("caseId", typeof(string));
-                        m_pAddrDT.Columns.Add("addressId", typeof(string));
-                        m_pAddrDT.Columns.Add("name", typeof(string));
-                        m_pAddrDT.Columns.Add("relation", typeof(string));
-                        m_pAddrDT.Columns.Add("addressType", typeof(string));
-                        m_pAddrDT.Columns.Add("addressDES", typeof(string));
-                        m_pAddrDT.Columns.Add("origin", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_caseId", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_addressId", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_name", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_relation", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_addressType", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_addressDES", typeof(string));
+                        m_pAddrDT.Columns.Add("addr_origin", typeof(string));
                         DataTable[] m_lAddrDT = new DataTable[m_uResqPages];
                         #endregion
 
@@ -1610,7 +1629,7 @@ namespace ButtzxBank.Controllers
                                                         DataRow m_pCaseDR = m_lCaseDT[m_uIndex].NewRow();
                                                         foreach (DataColumn caseDC in m_pCaseDT.Columns)
                                                         {
-                                                            m_pCaseDR[caseDC.ColumnName] = caseJT[caseDC.ColumnName];
+                                                            m_pCaseDR[caseDC.ColumnName] = caseJT[caseDC.ColumnName.Replace("case_", "")]?.ToString();
                                                         }
                                                         m_lCaseDT[m_uIndex].Rows.Add(m_pCaseDR);
 
@@ -1624,7 +1643,7 @@ namespace ButtzxBank.Controllers
                                                             bool _m_uMoreInd = false;
                                                             #endregion
 
-                                                            while (true)
+                                                            while (false)
                                                             {
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
@@ -1637,10 +1656,10 @@ namespace ButtzxBank.Controllers
                                                                     foreach (JToken jT in m_pJA)
                                                                     {
                                                                         DataRow m_pDR = m_lBaseDT[m_uIndex].NewRow();
-                                                                        m_pDR["caseId"] = caseId;
+                                                                        m_pDR["base_caseId"] = caseId;
                                                                         foreach (DataColumn dC in m_pBaseDT.Columns)
                                                                         {
-                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            if (!dC.ColumnName.Equals("base_caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("base_", "")]?.ToString();
                                                                         }
                                                                         m_lBaseDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1659,7 +1678,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件基本信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件基本信息错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -1695,7 +1714,7 @@ namespace ButtzxBank.Controllers
                                                                         DataRow m_pDR = m_lAcctDT[m_uIndex].NewRow();
                                                                         foreach (DataColumn dC in m_pAcctDT.Columns)
                                                                         {
-                                                                            m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("acct_", "")]?.ToString();
                                                                         }
                                                                         m_lAcctDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1714,7 +1733,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件账户信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件账户信息错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -1748,10 +1767,10 @@ namespace ButtzxBank.Controllers
                                                                     foreach (JToken jT in m_pJA)
                                                                     {
                                                                         DataRow m_pDR = m_lCustDT[m_uIndex].NewRow();
-                                                                        m_pDR["caseId"] = caseId;
+                                                                        m_pDR["cust_caseId"] = caseId;
                                                                         foreach (DataColumn dC in m_pCustDT.Columns)
                                                                         {
-                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            if (!dC.ColumnName.Equals("cust_caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("cust_", "")]?.ToString();
                                                                         }
                                                                         m_lCustDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1770,7 +1789,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件客户信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件客户信息错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -1804,10 +1823,10 @@ namespace ButtzxBank.Controllers
                                                                     foreach (JToken jT in m_pJA)
                                                                     {
                                                                         DataRow m_pDR = m_lAddiDT[m_uIndex].NewRow();
-                                                                        m_pDR["caseId"] = caseId;
+                                                                        m_pDR["addi_caseId"] = caseId;
                                                                         foreach (DataColumn dC in m_pAddiDT.Columns)
                                                                         {
-                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            if (!dC.ColumnName.Equals("addi_caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("addi_", "")]?.ToString();
                                                                         }
                                                                         m_lAddiDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1826,7 +1845,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件客户邮寄积分信息错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件客户邮寄积分信息错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -1860,10 +1879,10 @@ namespace ButtzxBank.Controllers
                                                                     foreach (JToken jT in m_pJA)
                                                                     {
                                                                         DataRow m_pDR = m_lCntaDT[m_uIndex].NewRow();
-                                                                        m_pDR["caseId"] = caseId;
+                                                                        m_pDR["cnta_caseId"] = caseId;
                                                                         foreach (DataColumn dC in m_pCntaDT.Columns)
                                                                         {
-                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            if (!dC.ColumnName.Equals("cnta_caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("cnta_", "")]?.ToString();
                                                                         }
                                                                         m_lCntaDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1882,7 +1901,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件客户联系方式错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件客户联系方式错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -1916,10 +1935,10 @@ namespace ButtzxBank.Controllers
                                                                     foreach (JToken jT in m_pJA)
                                                                     {
                                                                         DataRow m_pDR = m_lAddrDT[m_uIndex].NewRow();
-                                                                        m_pDR["caseId"] = caseId;
+                                                                        m_pDR["addr_caseId"] = caseId;
                                                                         foreach (DataColumn dC in m_pAddrDT.Columns)
                                                                         {
-                                                                            if (!dC.ColumnName.Equals("caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName]?.ToString();
+                                                                            if (!dC.ColumnName.Equals("addr_caseId")) m_pDR[dC.ColumnName] = jT[dC.ColumnName.Replace("addr_", "")]?.ToString();
                                                                         }
                                                                         m_lAddrDT[m_uIndex].Rows.Add(m_pDR);
                                                                     }
@@ -1938,7 +1957,7 @@ namespace ButtzxBank.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    Log.Instance.Debug($"委外案件客户联系地址错误记录:{m_pJR.Data}", LogTyper.ProLogger);
+                                                                    Log.Instance.Debug($"委外案件客户联系地址错误记录:{m_pJR.Data};案件号:{caseId}", LogTyper.ProLogger);
                                                                     _m_bResqState = false;
                                                                     _m_uResqCount++;
                                                                 }
@@ -2054,6 +2073,9 @@ namespace ButtzxBank.Controllers
 
                         ///多数据库合并输出
                         string m_sFilePath = $"~/Output/{m_dtNow.ToString("yyyy/yyyyMM/yyyyMMdd/委外案件信息_yyyyMMddHHmmssfffffff")}_{m_sUUID}.xlsx";
+
+                        ///入系统测试
+                        m_cSQL.m_fImportCase60(m_pDataSet);
 
                         ///结果模式
                         switch (resultMode)
