@@ -20,11 +20,11 @@ namespace ButtzxBank
         /// <summary>
         /// 计划：请求用户令牌
         /// </summary>
-        public const string JOB_RESQTOKEN = "resqToken";
+        public const string JOB_RESQTOKEN = "JOB_RESQTOKEN";
         /// <summary>
         /// 计划：提交催记
         /// </summary>
-        public const string JOB_SUBMITACTION = "submitAction";
+        public const string JOB_SUBMITACTION = "JOB_SUBMITACTION";
     }
     #endregion
 
@@ -109,10 +109,8 @@ namespace ButtzxBank
                 IJobDetail job = JobBuilder.Create<m_cQuartzJobResqToken>().Build();
                 ITrigger trigger = TriggerBuilder.Create()
                   .WithIdentity(m_cQuartzJobModel.JOB_RESQTOKEN, m_cQuartzJobModel.GROUP_NAME)
-                  .WithSimpleSchedule(t =>
-                    t.WithIntervalInSeconds(300)
-                     .RepeatForever())
-                     .Build();
+                  .WithCronSchedule(m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_RESQTOKEN])
+                  .Build();
                 scheduler.ScheduleJob(job, trigger);
             }
 
@@ -121,10 +119,8 @@ namespace ButtzxBank
                 IJobDetail job = JobBuilder.Create<m_cQuartzJobSubmitAction>().Build();
                 ITrigger trigger = TriggerBuilder.Create()
                   .WithIdentity(m_cQuartzJobModel.JOB_SUBMITACTION, m_cQuartzJobModel.GROUP_NAME)
-                  .WithSimpleSchedule(t =>
-                    t.WithIntervalInSeconds(300)
-                     .RepeatForever())
-                     .Build();
+                  .WithCronSchedule(m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_SUBMITACTION])
+                  .Build();
                 scheduler.ScheduleJob(job, trigger);
             }
         }
