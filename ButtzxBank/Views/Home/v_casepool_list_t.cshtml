@@ -61,6 +61,15 @@
                     </div>
                 </div>
                 <div class="layui-inline">
+                    <label class="layui-form-label" title="是否写非错误日志">是否写非错误日志</label>
+                    <div class="layui-input-block">
+                        <select name="writeLog" required lay-verify="required" lay-verType="tips" autocomplete="off">
+                            <option value="0" selected="selected">否</option>
+                            <option value="1">是</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label" title="结果模式">结果模式</label>
                     <div class="layui-input-block">
                         <select name="resultMode" required lay-verify="required" lay-verType="tips" autocomplete="off">

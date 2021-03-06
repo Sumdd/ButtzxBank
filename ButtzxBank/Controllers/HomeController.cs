@@ -1469,6 +1469,10 @@ namespace ButtzxBank.Controllers
                 int resultMode = 2;
                 List<m_cQuery> m_lQueryList = this.m_fSetAll(thisRequest, queryString, ref Token, ref resultMode);
 
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///以系统最后一条的rrn做开始,一页一条取得总条数,得到需要循环的页,下一页以该查询页的最后一个rrn做开始
                 HomeController m_pHC = new HomeController();
                 m_pHC.m_pRequest = thisRequest;
@@ -1726,7 +1730,7 @@ namespace ButtzxBank.Controllers
                                         ///请求对应页码的数据
                                         HomeController m_pHome0 = new HomeController();
                                         m_pHome0.m_pRequest = thisRequest;
-                                        JsonResult m_pPageIndexJsonResult = m_pHome0.f_casepool_list(m_uResqPageIndex, m_uPageSize, null, null, null, $"{{\"rrn\":\"{m_uRrn}\"}}");
+                                        JsonResult m_pPageIndexJsonResult = m_pHome0.f_casepool_list(m_uResqPageIndex, m_uPageSize, null, null, null, $"{{\"rrn\":\"{m_uRrn}\",\"writeLog\":\"{writeLog}\"}}");
                                         JObject m_pPageIndexJObject = JObject.FromObject(m_pPageIndexJsonResult.Data);
 
                                         ///判断页码请求结果
@@ -1766,7 +1770,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_case_info(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"visitFlag\":\"1\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_case_info(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"visitFlag\":\"1\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
@@ -1822,7 +1826,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_acct_list(1, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_acct_list(1, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
@@ -1877,7 +1881,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
@@ -1933,7 +1937,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_addition(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_addition(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
@@ -1989,7 +1993,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_phone_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_phone_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
@@ -2045,7 +2049,7 @@ namespace ButtzxBank.Controllers
                                                                 ///请求对应页码的数据
                                                                 HomeController m_pHome = new HomeController();
                                                                 m_pHome.m_pRequest = thisRequest;
-                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_address_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\"}}");
+                                                                JsonResult m_pJR = m_pHome.f_cust_maininfo_address_list(_m_uPageIndex, m_uPageSize, null, null, null, $"{{\"userToken\":\"{Token}\",\"caseId\":\"{caseId}\",\"writeLog\":\"{writeLog}\"}}");
                                                                 JObject m_pJO = JObject.FromObject(m_pJR.Data);
                                                                 if (m_pJO["status"].ToString().Equals("0") && m_pJO["data"].Type == JTokenType.Array)
                                                                 {
