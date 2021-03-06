@@ -194,8 +194,7 @@ namespace ButtzxBank
         {
             RsaPkcs8Util m_pPrivateRsaPkcs8Util = new RsaPkcs8Util(Encoding.GetEncoding(m_cConfigConstants.SYSTEM_ENCODING), null, m_cConfigConstants.PRIVATE_KEY);
             string m_sPrivateSignBase64String = m_pPrivateRsaPkcs8Util.SignData(digest(data), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
-            Log.Instance.Debug($"字符串签名:{m_sPrivateSignBase64String}");
-            return m_cCore.ToEncodingString(m_sPrivateSignBase64String);
+            return m_sPrivateSignBase64String;
         }
 
         //验签

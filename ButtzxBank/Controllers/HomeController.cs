@@ -56,13 +56,17 @@ namespace ButtzxBank.Controllers
                 if (string.IsNullOrWhiteSpace(usersJSONStr))
                     throw new ArgumentNullException("users");
 
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 encryptInfo.Add("users", JsonConvert.DeserializeObject<List<object>>(usersJSONStr));
                 //3、其它可以直接获取的内容
                 Dictionary<string, object> bizData = new Dictionary<string, object>();
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 JObject m_pData = JObject.Parse(resultMap["data"]?.ToString());
                 msg = $"用户令牌数据同步成功,更新数据量{m_pData["count"]}";
@@ -105,12 +109,16 @@ namespace ButtzxBank.Controllers
                 string searchMode = m_cQuery.m_fGetQueryString(m_lQueryList, "searchMode");
                 if (string.IsNullOrWhiteSpace(searchMode)) searchMode = "2";
 
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 switch (searchMode)
                 {
                     case "1":
                         {
                             #region ***缓存
-                            string m_sToken = m_cCore.m_fReadTxtToToken();
+                            string m_sToken = m_cCore.m_fReadTxtToToken(writeLog);
 
                             if (m_sToken == null)
                                 throw new Exception("Err无缓存");
@@ -137,7 +145,7 @@ namespace ButtzxBank.Controllers
                             //4、引入报文体
                             bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                             //5、发送处理对应处理请求
-                            Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                            Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                             string m_sToken = resultMap["data"]?.ToString();
 
@@ -182,13 +190,18 @@ namespace ButtzxBank.Controllers
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
                 string rrn = m_cQuery.m_fGetQueryString(m_lQueryList, "rrn");
                 if (string.IsNullOrWhiteSpace(rrn)) rrn = "1";
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 encryptInfo.Add("rrn", rrn);
                 //3、其它可以直接获取的内容
                 Dictionary<string, object> bizData = new Dictionary<string, object>();
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 count = Convert.ToInt32(resultMap["total"]?.ToString());
 
@@ -227,6 +240,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/case/info";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -238,7 +256,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -277,6 +295,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/acct/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -292,7 +315,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -329,6 +352,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/maininfo";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -338,7 +366,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -393,6 +421,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/maininfo/addition";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///起始页码
@@ -406,7 +439,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///有些字段需解密,需在此处解密字段
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -464,6 +497,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/maininfo/phone/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -477,7 +515,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///有些字段需解密,需在此处解密字段
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -532,6 +570,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/maininfo/address/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -545,7 +588,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request ?? this.m_pRequest, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -582,6 +625,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/case/aipa";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///卡号
@@ -595,7 +643,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -632,6 +680,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/case/realtime/repay";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///账户号
@@ -645,7 +698,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -682,6 +735,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/case/etp";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///卡号
@@ -703,7 +761,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -740,6 +798,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/coll/record/history";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///催记类型
@@ -761,7 +824,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
 
@@ -798,6 +861,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/action/submit";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -831,7 +899,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false, false, writeLog);
 
                 msg = retMsg;
 
@@ -862,6 +930,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/phone/update";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -879,7 +952,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false, false, writeLog);
 
                 msg = retMsg;
 
@@ -910,6 +983,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/cust/address/update";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -928,7 +1006,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false, false, writeLog);
 
                 msg = retMsg;
 
@@ -959,6 +1037,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/visit/apply/decode";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///委外机构网点代码
@@ -978,7 +1061,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -1017,6 +1100,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/visit/apply/decode/delay";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///外访记录ID
@@ -1028,7 +1116,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false, false, writeLog);
 
                 msg = retMsg;
 
@@ -1059,6 +1147,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/visit/apply/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///状态
                 encryptInfo.Add("status", m_cQuery.m_fGetQueryString(m_lQueryList, "status"));
 
@@ -1067,7 +1160,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
                 msg = resultMap["retMsg"]?.ToString();
@@ -1101,6 +1194,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/visit/apply/review";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///外访记录ID
@@ -1114,7 +1212,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, false, false, writeLog);
 
                 msg = retMsg;
 
@@ -1145,6 +1243,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/apply/decode";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///案件号
@@ -1160,7 +1263,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 ///Object转List
                 List<Dictionary<string, object>> m_pData = new List<Dictionary<string, object>>();
@@ -1199,6 +1302,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/apply/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///状态
                 encryptInfo.Add("status", m_cQuery.m_fGetQueryString(m_lQueryList, "status"));
 
@@ -1207,7 +1315,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
                 msg = resultMap["retMsg"]?.ToString();
@@ -1241,6 +1349,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/apply/review";
                 //2、报文体内容下
                 Dictionary<string, object> encryptInfo = new Dictionary<string, object>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///用户令牌
                 encryptInfo.Add("userToken", m_cQuery.m_fGetQueryString(m_lQueryList, "userToken"));
                 ///待审核ID
@@ -1255,7 +1368,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 msg = retMsg;
 
@@ -1286,6 +1399,11 @@ namespace ButtzxBank.Controllers
                 string interfaceId = "/visit/record/list";
                 //2、报文体内容
                 Dictionary<string, string> encryptInfo = new Dictionary<string, string>();
+
+                ///是否写非错误日志
+                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
                 ///外访开始时间
                 encryptInfo.Add("outBeginTime", m_cQuery.m_fGetQueryString(m_lQueryList, "outBeginTime"));
                 ///外访结束时间
@@ -1309,7 +1427,7 @@ namespace ButtzxBank.Controllers
                 //4、引入报文体
                 bizData.Add(m_cConfigConstants.DATA, encryptInfo);
                 //5、发送处理对应处理请求
-                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg);
+                Dictionary<string, object> resultMap = m_cSendUtil.send(bizData, interfaceId, this.Request, ref retCode, ref retMsg, true, false, writeLog);
 
                 List<Dictionary<string, object>> m_pData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(resultMap["data"]?.ToString());
                 msg = resultMap["retMsg"]?.ToString();
@@ -2075,7 +2193,7 @@ namespace ButtzxBank.Controllers
                         string m_sFilePath = $"~/Output/{m_dtNow.ToString("yyyy/yyyyMM/yyyyMMdd/委外案件信息_yyyyMMddHHmmssfffffff")}_{m_sUUID}.xlsx";
 
                         ///入系统测试
-                        m_cSQL.m_fImportCase60(m_pDataSet);
+                        bool m_bImport = m_cSQL.m_fImportCase60(m_pDataSet);
 
                         ///结果模式
                         switch (resultMode)

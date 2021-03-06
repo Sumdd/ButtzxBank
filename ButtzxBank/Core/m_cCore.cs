@@ -30,7 +30,7 @@ namespace ButtzxBank
             }
         }
 
-        public static string m_fReadTxtToToken()
+        public static string m_fReadTxtToToken(string writeLog = null)
         {
             lock (m_pFileLock)
             {
@@ -44,7 +44,7 @@ namespace ButtzxBank
                     if (System.IO.File.Exists(file))
                     {
                         string m_sToken = System.Text.Encoding.GetEncoding(m_cConfigConstants.SYSTEM_ENCODING).GetString(Convert.FromBase64String(System.IO.File.ReadAllText(file)));
-                        Log.Instance.Debug($"从{file}缓存中读取Token:{m_sToken}");
+                        if (writeLog == "1") Log.Instance.Debug($"从{file}缓存中读取Token:{m_sToken}");
                         return m_sToken;
                     }
                 }

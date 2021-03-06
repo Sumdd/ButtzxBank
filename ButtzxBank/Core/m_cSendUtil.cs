@@ -13,7 +13,8 @@ namespace ButtzxBank
     public class m_cSendUtil
     {
         //封装发送
-        public static Dictionary<string, object> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request, ref string retCode, ref string retMsg, bool m_bNullIsNoData = true, bool m_bUseNoData = false)
+        //由于Log太多,此处可以不打印
+        public static Dictionary<string, object> send(Dictionary<string, object> bizData, string interfaceId, HttpRequestBase request, ref string retCode, ref string retMsg, bool m_bNullIsNoData = true, bool m_bUseNoData = false, string writeLog = null)
         {
             if (bizData == null)
                 throw new ArgumentNullException("bizData");
@@ -53,10 +54,13 @@ namespace ButtzxBank
 
             //待签名字符串
             string signStr = m_cSendUtil.convertToSignData(signData);
+            //字符串签名 
+            string sign = m_cRSA.getSign(signStr);
             //公钥签名
-            bizData.Add(m_cConfigConstants.SIGN, m_cRSA.getSign(signStr));
+            bizData.Add(m_cConfigConstants.SIGN, m_cCore.ToEncodingString(sign));
             //参数化
-            string respEnBody = m_cSendUtil.sendPostReq(interfaceId, m_cSendUtil.convertToUrlParam(bizData), encryptStr);
+            string url = $"{m_cConfigConstants.APP_URL}{interfaceId}?{m_cSendUtil.convertToUrlParam(bizData)}";
+            string respEnBody = m_cSendUtil.sendPostReq(url, encryptStr);
 
             //解密
             string respBody = respEnBody;
@@ -69,7 +73,6 @@ namespace ButtzxBank
                 ///如果有错误再显示报文原文
                 Log.Instance.Debug($"最后的响应数据原文:{respEnBody}");
             }
-            Log.Instance.Debug($"最后的响应数据:{respBody}");
 
             //验证
             JObject m_pJObject = JObject.Parse(respBody);
@@ -101,7 +104,25 @@ namespace ButtzxBank
             }
 
             Dictionary<string, object> resultMap = m_pJObject.ToObject<Dictionary<string, object>>();
-            respVerify(resultMap, ref retCode, ref retMsg, m_bUseNoData);
+
+            ///只抛出异常请求
+            Exception ex = respVerify(resultMap, ref retCode, ref retMsg, m_bUseNoData);
+            if (ex != null)
+            {
+                Log.Instance.Error($"待签名字符串:{signStr}");
+                Log.Instance.Error($"字符串签名:{sign}");
+                Log.Instance.Error($"请求URL:{url}");
+                Log.Instance.Error($"最后的响应数据:{respBody}");
+                throw ex;
+            }
+            else if (writeLog == "1")
+            {
+                Log.Instance.Debug($"待签名字符串:{signStr}");
+                Log.Instance.Debug($"字符串签名:{sign}");
+                Log.Instance.Debug($"请求URL:{url}");
+                Log.Instance.Debug($"最后的响应数据:{respBody}");
+            }
+            else Log.Instance.Success($"接口\"{interfaceId}\"请求成功");
 
             return resultMap;
         }
@@ -123,8 +144,6 @@ namespace ButtzxBank
             }
             string data = sb.ToString();
             if (data.Length > 0) data = data.Substring(1);
-
-            Log.Instance.Debug($"待签名字符串:{data}");
             return data;
         }
 
@@ -146,19 +165,18 @@ namespace ButtzxBank
         }
 
         //验签
-        public static void respVerify(Dictionary<string, object> resultMap, ref string retCode, ref string retMsg, bool m_bUseNoData)
+        public static Exception respVerify(Dictionary<string, object> resultMap, ref string retCode, ref string retMsg, bool m_bUseNoData)
         {
             //获取网关响应码
             retCode = resultMap["retCode"]?.ToString();
             //网关响应消息
             retMsg = resultMap["retMsg"]?.ToString();
 
-            ///此处有个疑问,抛出异常前能否对ref参数赋值
-
+            //错误抛出
             if (!"0".Equals(retCode))
             {
                 if (string.IsNullOrWhiteSpace(retMsg)) retMsg = "非成功";
-                throw new Exception(retMsg);
+                return new Exception(retMsg);
             }
 
             if (string.IsNullOrWhiteSpace(retMsg)) retMsg = "成功";
@@ -169,18 +187,20 @@ namespace ButtzxBank
                 bool noData = Convert.ToBoolean(resultMap["noData"]);
                 if (noData)
                 {
-                    throw new Exception("Err空数据");
+                    return new Exception("Err空数据");
                 }
             }
+
+            return null;
         }
 
         //发送请求
-        public static string sendPostReq(string interfaceId, string urlParam, string reqBody)
+        public static string sendPostReq(string url, string reqBody)
         {
             if (reqBody == null)
                 throw new ArgumentNullException("reqBody");
 
-            HttpWebRequest post = m_cHmacAuthUtil.hmacAuth(interfaceId, urlParam, reqBody);
+            HttpWebRequest post = m_cHmacAuthUtil.hmacAuth(url, reqBody);
             WebResponse response = null;
             string responseStr = null;
 
@@ -188,37 +208,6 @@ namespace ButtzxBank
             {
                 //发送请求
                 response = post.GetResponse();
-
-                if (response != null)
-                {
-                    StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(m_cConfigConstants.SYSTEM_ENCODING));
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Debug(ex);
-                throw ex;
-            }
-
-            return responseStr;
-        }
-
-        ///调用JAVA API 接口
-        public static string sendGetReq(string reqHttp, string reqBody = null)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{reqHttp}{(reqBody == null ? null : $"?{reqBody}")}");
-            request.Method = "GET";
-            request.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
-
-            WebResponse response = null;
-            string responseStr = null;
-
-            try
-            {
-                //发送请求
-                response = request.GetResponse();
 
                 if (response != null)
                 {

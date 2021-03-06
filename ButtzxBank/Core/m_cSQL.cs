@@ -42,7 +42,7 @@ SELECT 1;
         #endregion
 
         #region ***6.0导案逻辑
-        public static bool m_fImportCase60(DataSet m_pDataSet, bool test = false)
+        public static bool m_fImportCase60(DataSet m_pDataSet)
         {
             #region ***默认分案机构Id
             string m_sSQLGetBaseOrganiseId = $@"
@@ -58,7 +58,12 @@ ORDER BY (
          ),
          AddTime ASC;
 ";
-            string m_sBaseOrganiseId = m_cSQL.m_fGetScalar(m_sSQLGetBaseOrganiseId, connectionString.CenoSystem60)?.ToString();
+            string m_sBaseOrganiseId = m_cSettings.m_dKeyValue["m_sBaseOrganiseID"];
+            if (string.IsNullOrWhiteSpace(m_sBaseOrganiseId))
+            {
+                m_sBaseOrganiseId = m_cSQL.m_fGetScalar(m_sSQLGetBaseOrganiseId, connectionString.CenoSystem60)?.ToString();
+                if (string.IsNullOrWhiteSpace(m_sBaseOrganiseId)) throw new Exception("组织机构非空,请先建立分支机构");
+            }
 
             #endregion
 
@@ -71,7 +76,12 @@ WHERE ISNULL(IsDel, 0) = 0
       AND Name LIKE '%中信%'
 ORDER BY AddTime ASC;
 ";
-            string m_sKehuId = m_cSQL.m_fGetScalar(m_sSQLGetKehuId, connectionString.CenoSystem60)?.ToString();
+            string m_sKehuId = m_cSettings.m_dKeyValue["m_sBankID"];
+            if (string.IsNullOrWhiteSpace(m_sKehuId))
+            {
+                m_sKehuId = m_cSQL.m_fGetScalar(m_sSQLGetKehuId, connectionString.CenoSystem60)?.ToString();
+                if (string.IsNullOrWhiteSpace(m_sKehuId)) throw new Exception("客户非空,请先建立包含“中信”关键字的客户");
+            }
             #endregion
 
             #region ***默认案件类型
@@ -83,7 +93,12 @@ WHERE ISNULL(IsDel, 0) = 0
       AND Name LIKE '%信用卡%'
 ORDER BY AddTime ASC;
 ";
-            string m_sAjlxId = m_cSQL.m_fGetScalar(m_sSQLGetAjlxId, connectionString.CenoSystem60)?.ToString();
+            string m_sAjlxId = m_cSettings.m_dKeyValue["m_sCaseTypeID"];
+            if (string.IsNullOrWhiteSpace(m_sAjlxId))
+            {
+                m_sAjlxId = m_cSQL.m_fGetScalar(m_sSQLGetAjlxId)?.ToString();
+                if (string.IsNullOrWhiteSpace(m_sAjlxId)) throw new Exception("案件类型非空,请先建立包含“信用卡”关键字的案件类型");
+            }
             #endregion
 
             using (SqlSugarClient client = new m_cSugar(connectionString.CenoSystem60, false).EasyClient)

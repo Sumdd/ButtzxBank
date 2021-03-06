@@ -13,14 +13,8 @@ namespace ButtzxBank
     public class m_cHmacAuthUtil
     {
         //构造请求
-        public static HttpWebRequest hmacAuth(string interfaceId, string urlParam, string body)
+        public static HttpWebRequest hmacAuth(string url, string body)
         {
-            if (body == null)
-                throw new ArgumentNullException("body");
-
-            string url = $"{m_cConfigConstants.APP_URL}{interfaceId}?{urlParam}";
-            Log.Instance.Debug($"请求URL:{url}");
-
             HttpWebRequest post;
             if (m_cConfigConstants.APP_URL.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
