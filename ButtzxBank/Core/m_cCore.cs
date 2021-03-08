@@ -7,6 +7,11 @@ namespace ButtzxBank
 {
     public class m_cCore
     {
+        public static string m_fAbsoluteURL(string m_sRelativeURL)
+        {
+            return m_sRelativeURL.Replace("~", m_cSettings.m_dKeyValue["m_sPath"]);
+        }
+
         public static string ToEncodingString(string m_sStr)
         {
             return HttpUtility.UrlEncode(m_sStr, System.Text.Encoding.GetEncoding(m_cConfigConstants.SYSTEM_ENCODING));
@@ -18,7 +23,7 @@ namespace ButtzxBank
             lock (m_pFileLock)
             {
                 ///创建文件夹
-                string path = HttpContext.Current.Server.MapPath("~/Token");
+                string path = m_cCore.m_fAbsoluteURL("~/Token");
                 if (!System.IO.Directory.Exists(path)) System.IO.Directory.CreateDirectory(path);
 
                 ///写入文件
@@ -36,7 +41,7 @@ namespace ButtzxBank
             {
                 try
                 {
-                    string path = HttpContext.Current.Server.MapPath("~/Token");
+                    string path = m_cCore.m_fAbsoluteURL("~/Token");
 
                     ///读取
                     DateTime m_dtDateTime = DateTime.Now;

@@ -21,13 +21,15 @@ namespace ButtzxBank
 
             #region ***公共信息加载
             ///客户端IP
-            bizData.Add(m_cConfigConstants.CLIENTIP, m_cCore.ToEncodingString(request.UserHostAddress));
+            string UserHostAddress = request?.UserHostAddress;
+            if (string.IsNullOrWhiteSpace(UserHostAddress)) UserHostAddress = "::1";
+            bizData.Add(m_cConfigConstants.CLIENTIP, m_cCore.ToEncodingString(UserHostAddress));
             ///客户端浏览器信息
-            string UserAgent = request.UserAgent;
+            string UserAgent = request?.UserAgent;
             if (string.IsNullOrWhiteSpace(UserAgent)) UserAgent = "VS";
             bizData.Add(m_cConfigConstants.USERAGENT, m_cCore.ToEncodingString(UserAgent));
             ///客户端设备类型
-            bizData.Add(m_cConfigConstants.DEVICETYPE, request.Browser.IsMobileDevice ? "1" : "3");
+            bizData.Add(m_cConfigConstants.DEVICETYPE, (request == null ? "3" : request.Browser.IsMobileDevice ? "1" : "3"));
             ///设备唯一标识,N
             ///GPS位置信息,N
             #endregion

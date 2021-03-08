@@ -84,7 +84,7 @@ namespace ButtzxBank
             ///为了兼容下载,这里默认本目录下Output文件即可
 
             string m_sOutxlsPath;
-            if (OutxlsPath.StartsWith("~")) m_sOutxlsPath = HttpContext.Current.Server.MapPath(OutxlsPath);
+            if (OutxlsPath.StartsWith("~")) m_sOutxlsPath = m_cCore.m_fAbsoluteURL(OutxlsPath);
             else m_sOutxlsPath = OutxlsPath;
 
             FileInfo newFile = new FileInfo(m_sOutxlsPath);
@@ -109,7 +109,7 @@ namespace ButtzxBank
             ///为了兼容下载,这里默认本目录下Output文件即可
 
             string m_sOutxlsPath;
-            if (OutxlsPath.StartsWith("~")) m_sOutxlsPath = HttpContext.Current.Server.MapPath(OutxlsPath);
+            if (OutxlsPath.StartsWith("~")) m_sOutxlsPath = m_cCore.m_fAbsoluteURL(OutxlsPath);
             else m_sOutxlsPath = OutxlsPath;
 
             FileInfo newFile = new FileInfo(m_sOutxlsPath);

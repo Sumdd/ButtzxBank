@@ -1466,12 +1466,10 @@ namespace ButtzxBank.Controllers
                 HttpRequestBase thisRequest = this.Request;
                 ///获取A、B、T各类Token
                 string Token = null;
+                string writeLog = null;
+                int isImport = 0;
                 int resultMode = 2;
-                List<m_cQuery> m_lQueryList = this.m_fSetAll(thisRequest, queryString, ref Token, ref resultMode);
-
-                ///是否写非错误日志
-                string writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
-                if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+                List<m_cQuery> m_lQueryList = this.m_fSetAll(thisRequest, queryString, ref Token, ref writeLog, ref isImport, ref resultMode);
 
                 ///以系统最后一条的rrn做开始,一页一条取得总条数,得到需要循环的页,下一页以该查询页的最后一个rrn做开始
                 HomeController m_pHC = new HomeController();
@@ -2232,7 +2230,7 @@ namespace ButtzxBank.Controllers
         #endregion
 
         #region +++设置Token,设置线程池配置
-        private List<m_cQuery> m_fSetAll(HttpRequestBase thisRequest, string queryString, ref string Token, ref int resultMode)
+        private List<m_cQuery> m_fSetAll(HttpRequestBase thisRequest, string queryString, ref string Token, ref string writeLog, ref int isImprot, ref int resultMode)
         {
             List<m_cQuery> m_lQueryList = m_cQuery.m_fSetQueryList(queryString);
 
@@ -2273,6 +2271,20 @@ namespace ButtzxBank.Controllers
                 }
             }
 
+            ///是否写非错误日志
+            writeLog = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+            if (string.IsNullOrWhiteSpace(writeLog)) writeLog = "1";
+
+            ///是否导入至系统
+            string _isImprot = m_cQuery.m_fGetQueryString(m_lQueryList, "writeLog");
+            if (!string.IsNullOrWhiteSpace(_isImprot))
+            {
+                if (!int.TryParse(_isImprot, out isImprot))
+                {
+                    Log.Instance.Debug($"是否导入至系统转换错误,默认不导入");
+                }
+            }
+
             ///可替换值
             string _Token = m_cQuery.m_fGetQueryString(m_lQueryList, "Token");
             if (!string.IsNullOrWhiteSpace(_Token)) Token = _Token;
@@ -2283,10 +2295,10 @@ namespace ButtzxBank.Controllers
                 HomeController m_pHome = new HomeController();
                 m_pHome.m_pRequest = thisRequest;
                 JsonResult m_pJsonResult;
-                if (!string.IsNullOrWhiteSpace(m_cCore.m_fReadTxtToToken()))
-                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"1\"}}");
+                if (!string.IsNullOrWhiteSpace(m_cCore.m_fReadTxtToToken(writeLog)))
+                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"1\",\"writeLog\":\"{writeLog}\"}}");
                 else
-                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"2\"}}");
+                    m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"2\",\"writeLog\":\"{writeLog}\"}}");
                 JObject m_pJObject = JObject.FromObject(m_pJsonResult.Data);
 
                 ///判断结果

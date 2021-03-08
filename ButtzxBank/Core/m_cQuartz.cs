@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using SqlSugar;
 using System.Web.Mvc;
 using ButtzxBank.Controllers;
+using System.Threading;
 
 namespace ButtzxBank
 {
@@ -49,9 +50,17 @@ namespace ButtzxBank
 
                     Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobResqToken][Execute][开始用户令牌数据同步]", LogTyper.JobLogger);
 
-                    ///查询出所有未导入的内容
-                    JsonResult m_pTokenJR = new HomeController().f_user_sync_token($"");
-                    JObject m_pTokenJO = JObject.FromObject(m_pTokenJR.Data);
+                    ///是否写非错误日志
+                    string writeLog = "0";
+
+                    ///查询用户令牌数据
+                    HomeController m_pHome = new HomeController();
+                    JsonResult m_pJsonResult;
+                    if (!string.IsNullOrWhiteSpace(m_cCore.m_fReadTxtToToken(writeLog)))
+                        m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"1\",\"writeLog\":\"{writeLog}\"}}");
+                    else
+                        m_pJsonResult = m_pHome.f_user_sync_token($"{{\"searchMode\":\"2\",\"writeLog\":\"{writeLog}\"}}");
+                    JObject m_pTokenJO = JObject.FromObject(m_pJsonResult.Data);
                     if (m_pTokenJO["status"].ToString().Equals("0"))
                     {
                         if (m_pTokenJO["data"].Type == JTokenType.Array)
@@ -61,26 +70,40 @@ namespace ButtzxBank
                             {
                                 Log.Instance.Debug($"[Imp][m_cQuartzJobResqToken][Execute][用户令牌数据:{m_pTokenJA.Count}]", LogTyper.JobLogger);
 
+                                ///更新语句
+                                List<string> m_lSQL = new List<string>();
                                 foreach (JToken m_pJT in m_pTokenJA)
                                 {
-
+                                    m_lSQL.Add($" SELECT '{m_pJT["agentId"]}' AS agentId, '{m_pJT["userId"]}' AS userId, '{m_pJT["userToken"]}' AS userToken ");
                                 }
 
+                                string m_sSQL = $@"
+UPDATE Users 
+SET Users.zxToken = T0.userToken,
+Users.zxTokenDate = GETDATE() 
+FROM
+	( {string.Join("\r\nUNION\r\n", m_lSQL)} ) AS T0 
+WHERE
+	T0.userId = Users.autoId;
+";
+                                int m_uCount = m_cSQL.m_fExecuteCommand(m_sSQL, m_cConnStr.CenoSystem60);
+                                if (m_uCount > 0)
+                                    Log.Instance.Success($"[Imp][m_cQuartzJobResqToken][Execute][用户令牌数据同步成功,响应{m_uCount}行]", LogTyper.JobLogger);
+                                else Log.Instance.Warn($"[Imp][m_cQuartzJobResqToken][Execute][用户令牌数据同步完成,响应0行]", LogTyper.JobLogger);
                             }
-                            else Log.Instance.Debug($"[Imp][m_cQuartzJobResqToken][Execute][无任务对账单数据,完成]", LogTyper.JobLogger);
+                            else Log.Instance.Debug($"[Imp][m_cQuartzJobResqToken][Execute][无任何用户令牌数据,完成]", LogTyper.JobLogger);
                         }
-                        else Log.Instance.Debug($"[Imp][m_cQuartzJobResqToken][Execute][无任何导案数据,完成]", LogTyper.JobLogger);
+                        else Log.Instance.Debug($"[Imp][m_cQuartzJobResqToken][Execute][无任何用户令牌数据,完成]", LogTyper.JobLogger);
                     }
                     else
                     {
                         //记录一下错误即可
-                        Log.Instance.Debug($"[Imp][m_cQuartzJobResqAll][Execute][查询用户令牌数据错误:{m_pTokenJR.Data}]", LogTyper.JobLogger);
+                        Log.Instance.Debug($"[Imp][m_cQuartzJobResqAll][Execute][用户令牌数据查询时错误:{m_pJsonResult.Data}]", LogTyper.JobLogger);
                     }
-
                 }
                 catch (Exception ex)
                 {
-                    Log.Instance.Debug(ex);
+                    Log.Instance.Debug(ex, LogTyper.JobLogger);
                 }
                 finally
                 {
@@ -112,7 +135,7 @@ namespace ButtzxBank
                 }
                 catch (Exception ex)
                 {
-                    Log.Instance.Debug(ex);
+                    Log.Instance.Debug(ex, LogTyper.JobLogger);
                 }
                 finally
                 {
@@ -132,6 +155,10 @@ namespace ButtzxBank
     public class m_cQuartzJobSubmitAction : IJob
     {
         private static bool m_bJobDoing = false;
+        /// <summary>
+        /// 读锁
+        /// </summary>
+        public static object m_oSQLLock = new object();
         public void Execute(IJobExecutionContext context)
         {
             if (!m_bJobDoing)
@@ -142,10 +169,32 @@ namespace ButtzxBank
 
                     Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute]请在此处书写“提交催记”逻辑]", LogTyper.JobLogger);
 
+                    ///提交催记至少一个线程
+                    int m_uThreadCount = 0;
+                    int.TryParse(m_cSettings.m_dKeyValue["m_uThreadCount"], out m_uThreadCount);
+                    if (m_uThreadCount <= 0) m_uThreadCount = 1;
+
+                    ///开启线程
+                    for (int i = 0; i < 10; i++)
+                    {
+                        ThreadPool.QueueUserWorkItem((o) =>
+                        {
+                            try
+                            {
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Instance.Debug(ex, LogTyper.JobLogger);
+                            }
+
+                        }, null);
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    Log.Instance.Debug(ex);
+                    Log.Instance.Debug(ex, LogTyper.JobLogger);
                 }
                 finally
                 {
@@ -154,7 +203,7 @@ namespace ButtzxBank
             }
             else
             {
-                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute][任务执行中,跳出]", LogTyper.JobLogger);
+                Log.Instance.Debug($"[ButtzxBank][m_cQuartzJobSubmitAction][Execute][催记提交任务执行中,跳出]", LogTyper.JobLogger);
             }
         }
     }
@@ -170,32 +219,44 @@ namespace ButtzxBank
 
             ///请求用户令牌
             {
-                IJobDetail job = JobBuilder.Create<m_cQuartzJobResqToken>().Build();
-                ITrigger trigger = TriggerBuilder.Create()
-                  .WithIdentity(m_cQuartzJobModel.JOB_RESQTOKEN, m_cQuartzJobModel.GROUP_NAME)
-                  .WithCronSchedule(m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_RESQTOKEN])
-                  .Build();
-                scheduler.ScheduleJob(job, trigger);
+                string cron = m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_RESQTOKEN];
+                if (!string.IsNullOrWhiteSpace(cron))
+                {
+                    IJobDetail job = JobBuilder.Create<m_cQuartzJobResqToken>().Build();
+                    ITrigger trigger = TriggerBuilder.Create()
+                      .WithIdentity(m_cQuartzJobModel.JOB_RESQTOKEN, m_cQuartzJobModel.GROUP_NAME)
+                      .WithCronSchedule(cron)
+                      .Build();
+                    scheduler.ScheduleJob(job, trigger);
+                }
             }
 
             ///提交催记
             {
-                IJobDetail job = JobBuilder.Create<m_cQuartzJobSubmitAction>().Build();
-                ITrigger trigger = TriggerBuilder.Create()
-                  .WithIdentity(m_cQuartzJobModel.JOB_SUBMITACTION, m_cQuartzJobModel.GROUP_NAME)
-                  .WithCronSchedule(m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_SUBMITACTION])
-                  .Build();
-                scheduler.ScheduleJob(job, trigger);
+                string cron = m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_SUBMITACTION];
+                if (!string.IsNullOrWhiteSpace(cron))
+                {
+                    IJobDetail job = JobBuilder.Create<m_cQuartzJobSubmitAction>().Build();
+                    ITrigger trigger = TriggerBuilder.Create()
+                      .WithIdentity(m_cQuartzJobModel.JOB_SUBMITACTION, m_cQuartzJobModel.GROUP_NAME)
+                      .WithCronSchedule(cron)
+                      .Build();
+                    scheduler.ScheduleJob(job, trigger);
+                }
             }
 
             ///获取对账单
             {
-                IJobDetail job = JobBuilder.Create<m_cQuartzJobResqDzd>().Build();
-                ITrigger trigger = TriggerBuilder.Create()
-                  .WithIdentity(m_cQuartzJobModel.JOB_RESQDZD, m_cQuartzJobModel.GROUP_NAME)
-                  .WithCronSchedule(m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_RESQDZD])
-                  .Build();
-                scheduler.ScheduleJob(job, trigger);
+                string cron = m_cSettings.m_dKeyValue[m_cQuartzJobModel.JOB_RESQDZD];
+                if (!string.IsNullOrWhiteSpace(cron))
+                {
+                    IJobDetail job = JobBuilder.Create<m_cQuartzJobResqDzd>().Build();
+                    ITrigger trigger = TriggerBuilder.Create()
+                      .WithIdentity(m_cQuartzJobModel.JOB_RESQDZD, m_cQuartzJobModel.GROUP_NAME)
+                      .WithCronSchedule(cron)
+                      .Build();
+                    scheduler.ScheduleJob(job, trigger);
+                }
             }
         }
 

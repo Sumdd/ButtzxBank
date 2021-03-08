@@ -61,7 +61,7 @@ ORDER BY (
             string m_sBaseOrganiseId = m_cSettings.m_dKeyValue["m_sBaseOrganiseID"];
             if (string.IsNullOrWhiteSpace(m_sBaseOrganiseId))
             {
-                m_sBaseOrganiseId = m_cSQL.m_fGetScalar(m_sSQLGetBaseOrganiseId, connectionString.CenoSystem60)?.ToString();
+                m_sBaseOrganiseId = m_cSQL.m_fGetScalar(m_sSQLGetBaseOrganiseId, m_cConnStr.CenoSystem60)?.ToString();
                 if (string.IsNullOrWhiteSpace(m_sBaseOrganiseId)) throw new Exception("组织机构非空,请先建立分支机构");
             }
 
@@ -79,7 +79,7 @@ ORDER BY AddTime ASC;
             string m_sKehuId = m_cSettings.m_dKeyValue["m_sBankID"];
             if (string.IsNullOrWhiteSpace(m_sKehuId))
             {
-                m_sKehuId = m_cSQL.m_fGetScalar(m_sSQLGetKehuId, connectionString.CenoSystem60)?.ToString();
+                m_sKehuId = m_cSQL.m_fGetScalar(m_sSQLGetKehuId, m_cConnStr.CenoSystem60)?.ToString();
                 if (string.IsNullOrWhiteSpace(m_sKehuId)) throw new Exception("客户非空,请先建立包含“中信”关键字的客户");
             }
             #endregion
@@ -101,7 +101,7 @@ ORDER BY AddTime ASC;
             }
             #endregion
 
-            using (SqlSugarClient client = new m_cSugar(connectionString.CenoSystem60, false).EasyClient)
+            using (SqlSugarClient client = new m_cSugar(m_cConnStr.CenoSystem60, false).EasyClient)
             {
                 client.Open();
                 client.Ado.CommandTimeOut = 0;
@@ -382,7 +382,7 @@ CREATE TABLE [#Addr]
                                                       t.Id ,
                                                       @AddTime ,
                                                       @AddUserId ,
-                                                      GETDATE() 
+                                                      @AddTime
                                               from XyKehu t WITH(NOLOCK)
                                               WHERE t.Id = @m_sKehuId;
 
@@ -1042,6 +1042,14 @@ DROP TABLE #Addr;
             createTempTablesql = string.Format(createTempTablesql,
                 string.Join(",", colSqlList), m_bTableName);
             return createTempTablesql;
+        }
+        #endregion
+
+        #region ***返回影响行
+        public static int m_fExecuteCommand(string m_sSQL, string m_sConnStr = null)
+        {
+            SqlSugarClient m_sEsyClient = new m_cSugar(m_sConnStr).EasyClient;
+            return m_sEsyClient.Ado.ExecuteCommand(m_sSQL);
         }
         #endregion
 
